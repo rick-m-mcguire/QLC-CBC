@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE FixtureDefinition>
+<FixtureDefinition xmlns="http://qlcplus.sourceforge.net/FixtureDefinition">
+ <Creator>
+  <Name>Q Light Controller Plus</Name>
+  <Version>4.8.4</Version>
+  <Author>MULTIMEDIA</Author>
+ </Creator>
+ <Manufacturer>ProShop</Manufacturer>
+ <Model>EA-P64D S/B</Model>
+ <Type>Color Changer</Type>
+ <Channel Name="Dimmer">
+  <Group Byte="0">Intensity</Group>
+  <Capability Min="0" Max="255">Dimmer</Capability>
+ </Channel>
+ <Channel Name="Red">
+  <Group Byte="0">Intensity</Group>
+  <Colour>Red</Colour>
+  <Capability Min="0" Max="255"></Capability>
+ </Channel>
+ <Channel Name="Green">
+  <Group Byte="0">Intensity</Group>
+  <Colour>Green</Colour>
+  <Capability Min="0" Max="255"></Capability>
+ </Channel>
+ <Channel Name="Blue">
+  <Group Byte="0">Intensity</Group>
+  <Colour>Blue</Colour>
+  <Capability Min="0" Max="255"></Capability>
+ </Channel>
+ <Channel Name="Strobe">
+  <Group Byte="0">Effect</Group>
+  <Capability Min="10" Max="57">Strobe Slow to Fast</Capability>
+  <Capability Min="60" Max="108">Pulse Slow Closed slow to fast</Capability>
+  <Capability Min="111" Max="159">Pulse fast Closed</Capability>
+  <Capability Min="162" Max="255">Random Strobe</Capability>
+ </Channel>
+ <Channel Name="Macro">
+  <Group Byte="0">Effect</Group>
+  <Capability Min="10" Max="50">Colour Fade</Capability>
+  <Capability Min="51" Max="91">Fade RGB only</Capability>
+  <Capability Min="92" Max="132">colour fade</Capability>
+  <Capability Min="133" Max="173">Colour anap</Capability>
+  <Capability Min="174" Max="214">Colour Pulse</Capability>
+  <Capability Min="215" Max="255">Random all Macros</Capability>
+ </Channel>
+ <Mode Name="Mode 1">
+  <Physical>
+   <Bulb Type="" ColourTemperature="0" Lumens="0"/>
+   <Dimensions Width="0" Height="0" Depth="0" Weight="0"/>
+   <Lens DegreesMin="0" DegreesMax="0" Name="Other"/>
+   <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
+   <Technical DmxConnector="5-pin" PowerConsumption="0"/>
+  </Physical>
+  <Channel Number="0">Red</Channel>
+  <Channel Number="1">Green</Channel>
+  <Channel Number="2">Blue</Channel>
+ </Mode>
+ <Mode Name="Mode 2">
+  <Physical>
+   <Bulb Type="" ColourTemperature="0" Lumens="0"/>
+   <Dimensions Width="0" Height="0" Depth="0" Weight="0"/>
+   <Lens DegreesMin="0" DegreesMax="0" Name="Other"/>
+   <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
+   <Technical DmxConnector="5-pin" PowerConsumption="0"/>
+  </Physical>
+  <Channel Number="0">Dimmer</Channel>
+  <Channel Number="1">Red</Channel>
+  <Channel Number="2">Green</Channel>
+  <Channel Number="3">Blue</Channel>
+ </Mode>
+ <Mode Name="Mode 3">
+  <Physical>
+   <Bulb Type="" ColourTemperature="0" Lumens="0"/>
+   <Dimensions Width="0" Height="0" Depth="0" Weight="0"/>
+   <Lens DegreesMin="0" DegreesMax="0" Name="Other"/>
+   <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
+   <Technical DmxConnector="5-pin" PowerConsumption="0"/>
+  </Physical>
+  <Channel Number="0">Dimmer</Channel>
+  <Channel Number="1">Red</Channel>
+  <Channel Number="2">Green</Channel>
+  <Channel Number="3">Blue</Channel>
+  <Channel Number="4">Strobe</Channel>
+  <Channel Number="5">Macro</Channel>
+ </Mode>
+</FixtureDefinition>

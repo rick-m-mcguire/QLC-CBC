@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE InputProfile>
+<InputProfile xmlns="http://www.qlcplus.org/InputProfile">
+ <Creator>
+  <Name>Q Light Controller Plus</Name>
+  <Version>4.10.1</Version>
+  <Author>MULTIMEDIA</Author>
+ </Creator>
+ <Manufacturer>Joystick</Manufacturer>
+ <Model>tEST</Model>
+ <Type>HID</Type>
+ <Channel Number="0">
+  <Name>Front/Back</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="1">
+  <Name>Left/Right</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="3">
+  <Name>Button 4</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="4">
+  <Name>Button 5</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="5">
+  <Name>Button 6</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="6">
+  <Name>Button 7</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="7">
+  <Name>Button 8</Name>
+  <Type>Button</Type>
+ </Channel>
+</InputProfile>

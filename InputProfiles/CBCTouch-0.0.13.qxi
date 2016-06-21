@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE InputProfile>
+<InputProfile xmlns="http://www.qlcplus.org/InputProfile">
+ <Creator>
+  <Name>Q Light Controller Plus</Name>
+  <Version>4.10.1</Version>
+  <Author>MULTIMEDIA</Author>
+ </Creator>
+ <Manufacturer>CBC Touch</Manufacturer>
+ <Model>0.0.13</Model>
+ <Type>OSC</Type>
+ <MIDISendNoteOff>False</MIDISendNoteOff>
+ <Channel Number="1459">
+  <Name>/1/multifader5/4</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="2242">
+  <Name>/1/multifader4/1</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="3074">
+  <Name>/1/multipush5/1/1</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="11216">
+  <Name>/1/multifader4/3</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="12048">
+  <Name>/1/multipush5/1/3</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="14937">
+  <Name>/1/multifader4/2</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="16025">
+  <Name>/1/multipush5/1/2</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="17370">
+  <Name>/1/multifader2/8</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="20198">
+  <Name>/1/multifader4/5</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="21022">
+  <Name>/1/multifader5/1</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="23471">
+  <Name>/1/multipush5/1/4</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="24431">
+  <Name>/1/multifader4/4</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="24709">
+  <Name>/1/multifader5/2</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="25707">
+  <Name>/1/rotary4</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="28940">
+  <Name>/1/multifader5/3</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="30178">
+  <Name>/1/rotary5</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="33310">
+  <Name>/1/push2</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="35254">
+  <Name>/1/multifader2/4</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="38975">
+  <Name>/1/multifader2/5</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="43684">
+  <Name>/1/multifader2/6</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="45189">
+  <Name>/1/push1</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="47917">
+  <Name>/1/multifader2/7</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="56859">
+  <Name>/1/multifader2/1</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="60544">
+  <Name>/1/multifader2/2</Name>
+  <Type>Button</Type>
+ </Channel>
+ <Channel Number="62743">
+  <Name>/1/fader2</Name>
+  <Type>Slider</Type>
+ </Channel>
+ <Channel Number="64777">
+  <Name>/1/multifader2/3</Name>
+  <Type>Slider</Type>
+ </Channel>
+</InputProfile>
