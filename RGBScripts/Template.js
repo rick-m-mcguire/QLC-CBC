@@ -101,11 +101,60 @@ function Color(){
   }
 
   //Sets the color based on hsv
+  //stolen from https://www.cs.rit.edu/~ncs/color/t_convert.html and color.js
   this.setAsHSV = function (h, s, v){
-    //TODO create conversion function
-    this.Red = 0;
-    this.Green = 0;
-    this.Blue = 0;
+    var i;
+    var f, p, q, t;
+
+    if( s == 0 ) {
+      // achromatic (grey)
+      this.Red = Math.floor(v*255);
+      this.Green = Math.floor(v*255);
+      this.Blue = Math.floor(v*255);
+    }
+    else {
+
+      var hue = h / 60;      // sector 0 to 5
+      i = Math.floor( hue );
+      f = hue - i;      // factorial part of hue
+      p = v * ( 1 - s );
+      q = v * ( 1 - s * f );
+      t = v * ( 1 - s * ( 1 - f ) );
+
+      switch( i ) {
+        case 0:
+          this.Red = Math.floor(v*255);
+          this.Green = Math.floor(t*255);
+          this.Blue = Math.floor(p*255);
+          break;
+        case 1:
+          this.Red = Math.floor(q*255);
+          this.Green = Math.floor(v*255);
+          this.Blue = Math.floor(p*255);
+          break;
+        case 2:
+          this.Red = Math.floor(p*255);
+          this.Green = Math.floor(v*255);
+          this.Blue = Math.floor(t*255);
+          break;
+        case 3:
+          this.Red = Math.floor(p*255);
+          this.Green = Math.floor(q*255);
+          this.Blue = Math.floor(v*255);
+          break;
+        case 4:
+          this.Red = Math.floor(t*255);
+          this.Green = Math.floor(p*255);
+          this.Blue = Math.floor(v*255);
+          break;
+        default:    // case 5:
+          this.Red = Math.floor(v*255);
+          this.Green = Math.floor(p*255);
+          this.Blue = Math.floor(q*255);
+          break;
+      }
+    }
+
   }
 
   /* Get Functions */
