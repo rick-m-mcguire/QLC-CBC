@@ -1,13 +1,14 @@
 <html>
 <head>
   <Title> RGBScript - TemplateJS </Title>
-<SCRIPT SRC="../Template.js"></SCRIPT>
+<SCRIPT SRC="../Color-Template.js"></SCRIPT>
 <SCRIPT type="text/javascript">
 
 function init(){
   TestRGB();
   TestQRGB();
   TestHSV();
+  TestHSVLimits();
 }
 
 function getColorDetails(col) {
@@ -114,6 +115,16 @@ function TestHSV(){
   document.getElementById("HSVTest5_Result").innerHTML = getColorDetails(col);
 }
 
+function TestHSVLimits(){
+  var output = "";
+  for(i = -800;i<800;i++){
+    var c = new Color();
+    c.setAsHSV(i,1,1);
+    output = output + "Hue = "+i+" - "+c.getHue()+"<br>";
+  }
+  document.getElementById("TestHSVLimits").innerHTML = output;
+}
+
 </SCRIPT>
 
 </head>
@@ -154,4 +165,8 @@ function TestHSV(){
   <p id="HSVTest4_Result"></p>
   <p id="HSVTest5_Test"></p>
   <p id="HSVTest5_Result"></p>
+
+  <h1> Test Set HSV Limits</h1>
+  <p id="TestHSVLimits"></p>
+
 </body>
