@@ -12,15 +12,15 @@ var testAlgo;
 		    algo.acceptColors = 0; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
         algo.properties = new Array();
 
-        /*
-        ** Custom Property Definition
-        */
+        /**
+         * Custom Property Definition
+         */
         algo.TemplateProperty = 2;
         algo.properties.push("name:TemplateProperty|type:range|display:Number of Fixtures|values:1,40|write:setNumPieces|read:getNumPieces");
 
-        /*
-        ** Custom Property Getter and Setter methods
-        */
+        /**
+         * Custom Property Getter and Setter methods
+         */
         algo.setTemplateProperty = function(_preset)
         {
           algo.TemplateProperty = _preset;
@@ -77,39 +77,56 @@ var testAlgo;
   * @param r - the amount of Red 0-255
   * @param g - the amount of Green 0-255
   * @param b - the amount of Blue 0-255
+  * @constructor
   */
 function Color(){
+  //Stores a colour as 3 16bit numbers. 0..65535
   this.Red = 0;
   this.Green = 0;
   this.Blue = 0;
 
   /* Set Functions */
 
-  //Sets the color based on rgb
-  this.setAsRGB = function (r, g, b){
-    this.Red = Math.min(255,Math.max(r,0));
-    this.Green = Math.min(255,Math.max(g,0));
-    this.Blue = Math.min(255,Math.max(b,0));
+  /**
+   * Sets the color based on 16 bit rgb
+   */
+  this.setAsRGB16 = function (r, g, b){
+    this.Red = Math.min(65535,Math.max(r,0));
+    this.Green = Math.min(65535,Math.max(g,0));
+    this.Blue = Math.min(65535,Math.max(b,0));
   }
 
-  //Sets the color based on a qRGB
-  this.setAsQRGB = function (qRGB){
+  /**
+   * Sets the color based on 8 bit rgb
+   */
+  this.setAsRGB8 = function (r, g, b){
+    this.Red = Math.min(65535,Math.max(r/255*65535,0));
+    this.Green = Math.min(65535,Math.max(g/255*65535,0));
+    this.Blue = Math.min(65535,Math.max(b/255*65535,0));
+  }
+
+  /**
+   * Sets the color based on a QRgb
+   */
+  this.setAsQRgb = function (QRgb){
     //input validation
-    if(qRGB>0xFFFFFF){
-      qRGB=0xFFFFFF;
+    if(QRgb>0xFFFFFF){
+      QRgb=0xFFFFFF;
     }
-    if(qRGB<0){
-      qRGB=0;
+    if(QRgb<0){
+      QRgb=0;
     }
 
     // Bitwise roll and bitmask last 8 bytes
-    this.Red = Math.round(((qRGB >> 16) & 0x00FF));
-    this.Green = Math.round(((qRGB >> 8) & 0x00FF));
-    this.Blue = Math.round((qRGB & 0x00FF));
+    this.Red = Math.round(((QRgb >> 16) & 0x00FF))/255*65535;
+    this.Green = Math.round(((QRgb >> 8) & 0x00FF))/255*65535;
+    this.Blue = Math.round((QRgb & 0x00FF))/255*65535;
   }
 
-  //Sets the color based on hsv
-  //stolen from https://www.cs.rit.edu/~ncs/color/t_convert.html and color.js
+  /**
+   * Sets the color based on hsv
+   * stolen from https://www.cs.rit.edu/~ncs/color/t_convert.html and color.js
+   */
   this.setAsHSV = function (h, s, v){
     //input validation
     if (s>1){
@@ -126,17 +143,16 @@ function Color(){
     }
     h = (h % 360 + 360) % 360; //Hue 360 wraps to 0
 
-    var i;
-    var f, p, q, t;
+    var i, f, p, q, t;
 
     if( s == 0 ) {
       // achromatic (grey)
-      this.Red = Math.floor(v*255);
-      this.Green = Math.floor(v*255);
-      this.Blue = Math.floor(v*255);
+      this.Red = Math.round(v*65535);
+      this.Green = Math.round(v*65535);
+      this.Blue = Math.round(v*65535);
     }
     else {
-
+      // chroma
       var hue = h / 60;      // sector 0 to 5
       i = Math.floor( hue );
       f = hue - i;      // factorial part of hue
@@ -146,50 +162,104 @@ function Color(){
 
       switch( i ) {
         case 0:
-          this.Red = Math.floor(v*255);
-          this.Green = Math.floor(t*255);
-          this.Blue = Math.floor(p*255);
+          this.Red = Math.round(v*65535);
+          this.Green = Math.round(t*65535);
+          this.Blue = Math.round(p*65535);
           break;
         case 1:
-          this.Red = Math.floor(q*255);
-          this.Green = Math.floor(v*255);
-          this.Blue = Math.floor(p*255);
+          this.Red = Math.round(q*65535);
+          this.Green = Math.round(v*65535);
+          this.Blue = Math.round(p*65535);
           break;
         case 2:
-          this.Red = Math.floor(p*255);
-          this.Green = Math.floor(v*255);
-          this.Blue = Math.floor(t*255);
+          this.Red = Math.round(p*65535);
+          this.Green = Math.round(v*65535);
+          this.Blue = Math.round(t*65535);
           break;
         case 3:
-          this.Red = Math.floor(p*255);
-          this.Green = Math.floor(q*255);
-          this.Blue = Math.floor(v*255);
+          this.Red = Math.round(p*65535);
+          this.Green = Math.round(q*65535);
+          this.Blue = Math.round(v*65535);
           break;
         case 4:
-          this.Red = Math.floor(t*255);
-          this.Green = Math.floor(p*255);
-          this.Blue = Math.floor(v*255);
+          this.Red = Math.round(t*65535);
+          this.Green = Math.round(p*65535);
+          this.Blue = Math.round(v*65535);
           break;
         default:    // case 5:
-          this.Red = Math.floor(v*255);
-          this.Green = Math.floor(p*255);
-          this.Blue = Math.floor(q*255);
+          this.Red = Math.round(v*65535);
+          this.Green = Math.round(p*65535);
+          this.Blue = Math.round(q*65535);
           break;
       }
     }
 
   }
 
-  /* Get Functions */
-  this.getQRGB = function (){
-    return (this.Red << 16) + (this.Green << 8) + this.Blue;
+  /** Get Functions */
+
+  /**
+   * Get Color's Red component as an 8 bit value
+   */
+  this.getRed8 = function (){
+    return Math.round(this.Red/65535*255);
   }
 
-  //gets the Hue of the color - http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
+  /**
+   * Get Color's Green component as an 8 bit value
+   */
+  this.getGreen8 = function (){
+    return Math.round(this.Green/65535*255);
+  }
+
+  /**
+   * Get Color's Blue component as an 8 bit value
+   */
+  this.getBlue8 = function (){
+    return Math.round(this.Blue/65535*255);
+  }
+
+  /**
+   * Get Color's Red component as an 16 bit value
+   */
+  this.getRed16 = function (){
+    return this.Red;
+  }
+
+  /**
+   * Get Color's Green component as an 16 bit value
+   */
+  this.getGreen16 = function (){
+    return this.Green;
+  }
+
+  /**
+   * Get Color's Blue component as an 16 bit value
+   */
+  this.getBlue16 = function (){
+    return this.Blue;
+  }
+
+  /**
+   * Get Color as a QRgb
+   */
+  this.getQRgb = function (){
+    var r = Math.round(this.Red/65535*255);
+    var g = Math.round(this.Green/65535*255);
+    var b = Math.round(this.Blue/65535*255);
+    return (r << 16) + (g << 8) + b;
+  }
+
+  /**
+   * Get Color's Hue component.
+   * @return {int} the Hue 0 to 360
+   *
+   * Algorithms source http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
+  */
   this.getHue = function (){
-    var rp = this.Red/255.0;
-    var gp = this.Green/255.0;
-    var bp = this.Blue/255.0;
+    var rp = this.Red/65535.0;
+    var gp = this.Green/65535.0;
+    var bp = this.Blue/65535.0;
     var cmax = Math.max(rp,Math.max(gp,bp));
     var cmin = Math.min(rp,Math.min(gp,bp));
     var delta = cmax - cmin;
@@ -208,11 +278,14 @@ function Color(){
     return ((hue+360) % 360);
   }
 
-  //gets the saturation of the color - http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
+  /**
+   * Get the Saturation of the color - as 0-1
+   * http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
+  */
   this.getSat = function (){
-    var rp = this.Red/255.0;
-    var gp = this.Green/255.0;
-    var bp = this.Blue/255.0;
+    var rp = this.Red/65535.0;
+    var gp = this.Green/65535.0;
+    var bp = this.Blue/65535.0;
     var cmax = Math.max(rp,Math.max(gp,bp));
     var cmin = Math.min(rp,Math.min(gp,bp));
     var delta = cmax - cmin;
@@ -226,11 +299,14 @@ function Color(){
     return sat;
   }
 
-  //gets the value of the color - http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
+  /**
+   * Get the Value of the color - as 0-1
+   * http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
+  */
   this.getVal = function (){
-    var rp = this.Red/255.0;
-    var gp = this.Green/255.0;
-    var bp = this.Blue/255.0;
+    var rp = this.Red/65535.0;
+    var gp = this.Green/65535.0;
+    var bp = this.Blue/65535.0;
     var cmax = Math.max(rp,Math.max(gp,bp));
     return cmax;
   }
