@@ -42,15 +42,13 @@ var testAlgo;
          */
         algo.rgbMap = function(width, height, rgb, step)
         {
-          // Create the color
-          var c = new Color();
-          c.setAsQRgb(rgb);
 
+          var HSV = QRgbToHSV(rgb);
           //Create the HSV for the color
           var h,s,v;
-          h = c.getHue();
-          s = c.getSat();
-          v = c.getVal();
+          h = HSV.H;
+          s = HSV.S;
+          v = HSV.V;
 
           // Workout the Hue for the step
           var newHue = h;
@@ -76,9 +74,6 @@ var testAlgo;
             }
           }
 
-          // Set Color to newHue
-          c.setAsHSV(newHue,s,v);
-
           //create empty map
           var map = new Array(height);
           /*
@@ -89,7 +84,7 @@ var testAlgo;
             map[y] = new Array();
             for (var x = 0; x < width; x++)
             {
-              map[y][x] = c.getQRgb();
+              map[y][x] = HSVToQRgb(newHue,s,v);
             }
           }
           return map;
@@ -119,246 +114,301 @@ var testAlgo;
 )();
 
 /**
- * Color Functions
- */
+* =========================================
+* Color Functions
+* =========================================
+*/
 
- /**
-  * Color Constructor
-  * Color holds the definition of a Color in RGB format
-  * @param r - the amount of Red 0-255
-  * @param g - the amount of Green 0-255
-  * @param b - the amount of Blue 0-255
-  * @constructor
-  */
-function Color(){
-  //Stores a colour as 3 16bit numbers. 0..65535
-  this.Red = 0;
-  this.Green = 0;
-  this.Blue = 0;
+//----------------- RGB TO -----------------
 
-  /* Set Functions */
+/**
+* Color RGBToQRgb
+* Color holds the definition of a Color in RGB format
+* @param r - the amount of Red 0-255
+* @param g - the amount of Green 0-255
+* @param b - the amount of Blue 0-255
+* @returns a QRgb value for the r,g,b
+*/
+function RGBToQRgb(r,g,b){
+  return (r << 16) + (g << 8) + b;
+}
 
-  /**
-   * Sets the color based on 16 bit rgb
-   */
-  this.setAsRGB16 = function (r, g, b){
-    this.Red = Math.min(65535,Math.max(r,0));
-    this.Green = Math.min(65535,Math.max(g,0));
-    this.Blue = Math.min(65535,Math.max(b,0));
+/**
+* Color RGBToHue
+* @param r - the amount of Red 0-255
+* @param g - the amount of Green 0-255
+* @param b - the amount of Blue 0-255
+* @returns an Object Containing H,S,V
+*/
+function RGBToHSV(r,g,b) {
+  //Values to return
+  var H, S, V;
+
+  var rp = r/255.0;
+  var gp = g/255.0;
+  var bp = b/255.0;
+  var cmax = Math.max(rp,Math.max(gp,bp));
+  var cmin = Math.min(rp,Math.min(gp,bp));
+  var delta = cmax - cmin;
+  var hue; // the hue placeholder
+
+  //Calculate Hue
+  if (delta == 0){
+    hue = 0;
+  } else if (rp == cmax) {
+    hue = 60*((gp-bp)/delta);
+  } else if (gp == cmax) {
+    hue = 60*((bp-rp)/delta +2);
+  } else { // bp == cmax
+    hue = 60*((rp-gp)/delta +4);
   }
 
-  /**
-   * Sets the color based on 8 bit rgb
-   */
-  this.setAsRGB8 = function (r, g, b){
-    this.Red = Math.min(65535,Math.max(r/255*65535,0));
-    this.Green = Math.min(65535,Math.max(g/255*65535,0));
-    this.Blue = Math.min(65535,Math.max(b/255*65535,0));
+  H = ((hue+360) % 360); //Hue value to return
+
+  //Calculate Saturation
+  if (cmax == 0){
+    S = 0;
+  } else {
+    S = delta / cmax;
   }
 
-  /**
-   * Sets the color based on a QRgb
-   */
-  this.setAsQRgb = function (QRgb){
-    //input validation
-    if(QRgb>0xFFFFFF){
-      QRgb=0xFFFFFF;
+  //Calcuate Value
+  V = cmax;
+
+  return {H: H, S: S, V: V};
+}
+
+//----------------- QRgb TO -----------------
+
+/**
+* Color QRgbToRGB
+* Color holds the definition of a Color in RGB format
+* @param r - the amount of Red 0-255
+* @param g - the amount of Green 0-255
+* @param b - the amount of Blue 0-255
+* @returns a QRgb value for the r,g,b
+*/
+function QRgbToRGB(QRgb){
+  //input validation
+  if(QRgb>0xFFFFFF){
+    QRgb=0xFFFFFF;
+  }
+  if(QRgb<0){
+    QRgb=0;
+  }
+  return {Red: Math.round(((QRgb >> 16) & 0x00FF)), Green: Math.round(((QRgb >> 8) & 0x00FF)), Blue: Math.round((QRgb & 0x00FF))};
+}
+
+/**
+* Color QRgbToHSV
+* Color holds the definition of a Color in RGB format
+* @param QRgb - the QRgb value
+* @returns a QRgb value for the r,g,b
+*/
+function QRgbToHSV(QRgb){
+  //input validation
+  if(QRgb>0xFFFFFF){
+    QRgb=0xFFFFFF;
+  }
+  if(QRgb<0){
+    QRgb=0;
+  }
+
+  //Values to return
+  var H, S, V;
+  var rp = Math.round((QRgb >> 16) & 0x00FF)/255.0;
+  var gp = Math.round((QRgb >> 8) & 0x00FF)/255.0;
+  var bp = Math.round(QRgb & 0x00FF)/255.0;
+  var cmax = Math.max(rp,Math.max(gp,bp));
+  var cmin = Math.min(rp,Math.min(gp,bp));
+  var delta = cmax - cmin;
+  var hue; // the hue placeholder
+
+  //Calculete Hue
+  if (delta == 0){
+    hue = 0;
+  } else if (rp == cmax) {
+    hue = 60*((gp-bp)/delta);
+  } else if (gp == cmax) {
+    hue = 60*((bp-rp)/delta +2);
+  } else { // bp == cmax
+    hue = 60*((rp-gp)/delta +4);
+  }
+
+  H = ((hue+360) % 360); //Hue value to return
+
+  //Calculate Saturation
+  if (cmax == 0){
+    S = 0;
+  } else {
+    S = delta / cmax;
+  }
+
+  //Calcuate Value
+  V = cmax;
+
+  return {H: H, S: S, V: V};
+}
+
+
+//----------------- HSV To -----------------
+
+/**
+* Color HSVToRGB
+* Color holds the definition of a Color in RGB format
+* @param H - Hue
+* @param S - Saturation
+* @param V - Value
+* @returns an Object containing {Red, Green, Blue}
+*/
+function HSVToRGB(h,s,v) {
+  //return values
+  var r, g, b;
+
+  //input validation
+  if (s>1){
+    s=1;
+  }
+  if(s<0){
+    s=0;
+  }
+  if (v>1){
+    v=1;
+  }
+  if(v<0){
+    v=0;
+  }
+  h = (h % 360 + 360) % 360; //Hue 360 wraps to 0
+
+  var i, f, p, q, t;
+
+  if( s == 0 ) {
+    // achromatic (grey)
+    r = Math.round(v*255);
+    g = Math.round(v*255);
+    b = Math.round(v*255);
+  }
+  else {
+    // chroma (color)
+    var hue = h / 60;      // sector 0 to 5
+    i = Math.floor( hue );
+    f = hue - i;      // factorial part of hue
+    p = v * ( 1 - s );
+    q = v * ( 1 - s * f );
+    t = v * ( 1 - s * ( 1 - f ) );
+
+    switch( i ) {
+      case 0:
+      r = Math.round(v*255);
+      g = Math.round(t*255);
+      b = Math.round(p*255);
+      break;
+      case 1:
+      r = Math.round(q*255);
+      g = Math.round(v*255);
+      b = Math.round(p*255);
+      break;
+      case 2:
+      r = Math.round(p*255);
+      g = Math.round(v*255);
+      b = Math.round(t*255);
+      break;
+      case 3:
+      r = Math.round(p*255);
+      g = Math.round(q*255);
+      b = Math.round(v*255);
+      break;
+      case 4:
+      r = Math.round(t*255);
+      g = Math.round(p*255);
+      b = Math.round(v*255);
+      break;
+      default:    // case 5:
+      r = Math.round(v*255);
+      g = Math.round(p*255);
+      b = Math.round(q*255);
+      break;
     }
-    if(QRgb<0){
-      QRgb=0;
+  }
+  return {Red: r, Green: g, Blue: b};
+}
+
+/**
+* Color HSVToQRgb
+* Color holds the definition of a Color in RGB format
+* @param H - Hue
+* @param S - Saturation
+* @param V - Value
+* @returns an Object containing {Red, Green, Blue}
+*/
+function HSVToQRgb(h,s,v) {
+  //return values
+  var r, g, b;
+
+  //input validation
+  if (s>1){
+    s=1;
+  }
+  if(s<0){
+    s=0;
+  }
+  if (v>1){
+    v=1;
+  }
+  if(v<0){
+    v=0;
+  }
+  h = (h % 360 + 360) % 360; //Hue 360 wraps to 0
+
+  var i, f, p, q, t;
+
+  if( s == 0 ) {
+    // achromatic (grey)
+    r = Math.round(v*255);
+    g = Math.round(v*255);
+    b = Math.round(v*255);
+  }
+  else {
+    // chroma (color)
+    var hue = h / 60;      // sector 0 to 5
+    i = Math.floor( hue );
+    f = hue - i;      // factorial part of hue
+    p = v * ( 1 - s );
+    q = v * ( 1 - s * f );
+    t = v * ( 1 - s * ( 1 - f ) );
+
+    switch( i ) {
+      case 0:
+      r = Math.round(v*255);
+      g = Math.round(t*255);
+      b = Math.round(p*255);
+      break;
+      case 1:
+      r = Math.round(q*255);
+      g = Math.round(v*255);
+      b = Math.round(p*255);
+      break;
+      case 2:
+      r = Math.round(p*255);
+      g = Math.round(v*255);
+      b = Math.round(t*255);
+      break;
+      case 3:
+      r = Math.round(p*255);
+      g = Math.round(q*255);
+      b = Math.round(v*255);
+      break;
+      case 4:
+      r = Math.round(t*255);
+      g = Math.round(p*255);
+      b = Math.round(v*255);
+      break;
+      default:    // case 5:
+      r = Math.round(v*255);
+      g = Math.round(p*255);
+      b = Math.round(q*255);
+      break;
     }
-
-    // Bitwise roll and bitmask last 8 bytes
-    this.Red = Math.round(((QRgb >> 16) & 0x00FF))/255*65535;
-    this.Green = Math.round(((QRgb >> 8) & 0x00FF))/255*65535;
-    this.Blue = Math.round((QRgb & 0x00FF))/255*65535;
   }
-
-  /**
-   * Sets the color based on hsv
-   * stolen from https://www.cs.rit.edu/~ncs/color/t_convert.html and color.js
-   */
-  this.setAsHSV = function (h, s, v){
-    //input validation
-    if (s>1){
-      s=1;
-    }
-    if(s<0){
-      s=0;
-    }
-    if (v>1){
-      v=1;
-    }
-    if(v<0){
-      v=0;
-    }
-    h = (h % 360 + 360) % 360; //Hue 360 wraps to 0
-
-    var i, f, p, q, t;
-
-    if( s == 0 ) {
-      // achromatic (grey)
-      this.Red = Math.round(v*65535);
-      this.Green = Math.round(v*65535);
-      this.Blue = Math.round(v*65535);
-    }
-    else {
-      // chroma
-      var hue = h / 60;      // sector 0 to 5
-      i = Math.floor( hue );
-      f = hue - i;      // factorial part of hue
-      p = v * ( 1 - s );
-      q = v * ( 1 - s * f );
-      t = v * ( 1 - s * ( 1 - f ) );
-
-      switch( i ) {
-        case 0:
-          this.Red = Math.round(v*65535);
-          this.Green = Math.round(t*65535);
-          this.Blue = Math.round(p*65535);
-          break;
-        case 1:
-          this.Red = Math.round(q*65535);
-          this.Green = Math.round(v*65535);
-          this.Blue = Math.round(p*65535);
-          break;
-        case 2:
-          this.Red = Math.round(p*65535);
-          this.Green = Math.round(v*65535);
-          this.Blue = Math.round(t*65535);
-          break;
-        case 3:
-          this.Red = Math.round(p*65535);
-          this.Green = Math.round(q*65535);
-          this.Blue = Math.round(v*65535);
-          break;
-        case 4:
-          this.Red = Math.round(t*65535);
-          this.Green = Math.round(p*65535);
-          this.Blue = Math.round(v*65535);
-          break;
-        default:    // case 5:
-          this.Red = Math.round(v*65535);
-          this.Green = Math.round(p*65535);
-          this.Blue = Math.round(q*65535);
-          break;
-      }
-    }
-
-  }
-
-  /** Get Functions */
-
-  /**
-   * Get Color's Red component as an 8 bit value
-   */
-  this.getRed8 = function (){
-    return Math.round(this.Red/65535*255);
-  }
-
-  /**
-   * Get Color's Green component as an 8 bit value
-   */
-  this.getGreen8 = function (){
-    return Math.round(this.Green/65535*255);
-  }
-
-  /**
-   * Get Color's Blue component as an 8 bit value
-   */
-  this.getBlue8 = function (){
-    return Math.round(this.Blue/65535*255);
-  }
-
-  /**
-   * Get Color's Red component as an 16 bit value
-   */
-  this.getRed16 = function (){
-    return this.Red;
-  }
-
-  /**
-   * Get Color's Green component as an 16 bit value
-   */
-  this.getGreen16 = function (){
-    return this.Green;
-  }
-
-  /**
-   * Get Color's Blue component as an 16 bit value
-   */
-  this.getBlue16 = function (){
-    return this.Blue;
-  }
-
-  /**
-   * Get Color as a QRgb
-   */
-  this.getQRgb = function (){
-    var r = Math.round(this.Red/65535*255);
-    var g = Math.round(this.Green/65535*255);
-    var b = Math.round(this.Blue/65535*255);
-    return (r << 16) + (g << 8) + b;
-  }
-
-  /**
-   * Get Color's Hue component.
-   * @return {int} the Hue 0 to 360
-   *
-   * Algorithms source http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
-  */
-  this.getHue = function (){
-    var rp = this.Red/65535.0;
-    var gp = this.Green/65535.0;
-    var bp = this.Blue/65535.0;
-    var cmax = Math.max(rp,Math.max(gp,bp));
-    var cmin = Math.min(rp,Math.min(gp,bp));
-    var delta = cmax - cmin;
-    var hue; // the hue placeholder
-
-    if (delta == 0){
-      hue = 0;
-    } else if (rp == cmax) {
-      hue = 60*((gp-bp)/delta);
-    } else if (gp == cmax) {
-      hue = 60*((bp-rp)/delta +2);
-    } else { // bp == cmax
-      hue = 60*((rp-gp)/delta +4);
-    }
-
-    return ((hue+360) % 360);
-  }
-
-  /**
-   * Get the Saturation of the color - as 0-1
-   * http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
-  */
-  this.getSat = function (){
-    var rp = this.Red/65535.0;
-    var gp = this.Green/65535.0;
-    var bp = this.Blue/65535.0;
-    var cmax = Math.max(rp,Math.max(gp,bp));
-    var cmin = Math.min(rp,Math.min(gp,bp));
-    var delta = cmax - cmin;
-    var sat; // the saturation place holder
-
-    if (cmax == 0){
-      sat = 0;
-    } else {
-      sat = delta / cmax;
-    }
-    return sat;
-  }
-
-  /**
-   * Get the Value of the color - as 0-1
-   * http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
-  */
-  this.getVal = function (){
-    var rp = this.Red/65535.0;
-    var gp = this.Green/65535.0;
-    var bp = this.Blue/65535.0;
-    var cmax = Math.max(rp,Math.max(gp,bp));
-    return cmax;
-  }
+  return (r << 16) + (g << 8) + b;
 }
