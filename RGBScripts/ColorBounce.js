@@ -7,7 +7,7 @@ var testAlgo;
     {
         var algo = new Object;
         algo.apiVersion = 2;
-        algo.name = "ColorWave";
+        algo.name = "ColorBounce";
         algo.author = "Rick McGuire";
 		    algo.acceptColors = 1; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
         algo.properties = new Array();
@@ -15,9 +15,10 @@ var testAlgo;
         /**
          * Custom Property Definition
          */
-        algo.HueRange = 50;
+        algo.HueRange = 30;
         algo.properties.push("name:HueRange|type:range|display:Hue Range|values:0,180|write:setHueRange|read:getHueRange");
 
+        algo.NumSteps = 10;
         /**
          * Custom Property Getter and Setter methods
          */
@@ -31,23 +32,6 @@ var testAlgo;
           return ""+algo.HueRange;
         }
 
-        algo.HueDirection = "Counter-Clockwise"; //TODO Both Counter-Clockwise Clockwise
-        algo.properties.push("name:HueDirection|type:list|display:Hue Direction|values:Clockwise,Both,Counter-Clockwise|write:setHueDirection|read:getHueDirection");
-
-        /**
-         * Custom Property Getter and Setter methods
-         */
-        algo.setHueDirection = function(_preset)
-        {
-          algo.HueDirection = _preset;
-        }
-
-        algo.getHueDirection = function()
-        {
-          return ""+algo.HueDirection;
-        }
-
-
         /**
          * The actual "algorithm" for this RGB script. Produces a map of
          * size($width, $height) each time it is called.
@@ -58,85 +42,49 @@ var testAlgo;
          */
         algo.rgbMap = function(width, height, rgb, step)
         {
-          algo.NumSteps = width-1;
-          var HSV = QRgbToHSV(0xff0000);
+
+          var HSV = QRgbToHSV(rgb);
           //Create the HSV for the color
           var h,s,v;
           h = HSV.H;
           s = HSV.S;
           v = HSV.V;
 
-          // Workout the Hues
-          var Hues = new Array (2*algo.NumSteps+1);
-          var firstHue, hueStep;
-          switch (algo.HueDirection) {
-            case "Clockwise":
-              firstHue = h;
-              hueStep = algo.HueRange/(2*algo.NumSteps+1);
-              break;
-            case "Counter-Clockwise":
-              firstHue = h;
-              hueStep = -algo.HueRange/(2*algo.NumSteps+1);
-              break;
-            default: //Both
-              firstHue = h-algo.HueRange;
-              hueStep = algo.HueRange/algo.NumSteps;
-              break;
-          }
-
+          // Workout the Hue for the step
+          var newHue = h;
           var i = 0;
-          for(i=0; i<2*algo.NumSteps+1;i++){
-            Hues[i]= firstHue+hueStep*i;
-          }
-
-          //workout the starting pos for this step
-          var firstpos, pos, up;
-          i=0;
-          pos = 0;
-          up = true;
+          var pos = 0;
+          var up = true;
           while (i!=step){
             if (up){
+              newHue = newHue+algo.HueRange/algo.NumSteps;
               pos++;
               i++;
             }
             else {
+              newHue = newHue-algo.HueRange/algo.NumSteps;
               pos--;
               i++;
             }
-            if (pos>=algo.NumSteps){
+            if (pos>algo.NumSteps){
               up = false;
             }
-            if (pos<=-algo.NumSteps){
+            if (pos<-algo.NumSteps){
               up = true;
             }
           }
-          firstpos = pos;
 
           //create empty map
           var map = new Array(height);
+          /*
+           *  Initialise Map to all black
+           */
           for (var y = 0; y < height; y++)
           {
             map[y] = new Array();
-            pos = firstpos; //Initialise pos
-            up = true;
             for (var x = 0; x < width; x++)
             {
-              map[y][x] = HSVToQRgb(Hues[pos],s,v);
-              //map[y][x] = rgb;
-              //check direction
-              if (pos>=Hues.length-1){
-                up = false;
-              }
-              if (pos<=0){
-                up = true;
-              }
-              //new pos
-              if (up){
-                pos++;
-              }
-              else {
-                pos--;
-              }
+              map[y][x] = HSVToQRgb(newHue,s,v);
             }
           }
           return map;
@@ -154,8 +102,7 @@ var testAlgo;
             // All pixels in the map must be used exactly once, each one separately
             // at a time. Therefore, the maximum number of steps produced by this
             // script on a 5 * 5 grid is 25.
-            algo.NumSteps = width-1;
-            return 2*algo.NumSteps;
+            return 4*algo.NumSteps;
 			      //width * height;
         }
 
