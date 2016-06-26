@@ -16,7 +16,7 @@ var testAlgo;
          * Custom Property Definition
          */
         algo.HueRange = 50;
-        algo.properties.push("name:HueRange|type:range|display:Hue Range|values:0,180|write:setHueRange|read:getHueRange");
+        algo.properties.push("name:HueRange|type:range|display:Hue Range|values:0,360|write:setHueRange|read:getHueRange");
 
         /**
          * Custom Property Getter and Setter methods
@@ -59,7 +59,7 @@ var testAlgo;
         algo.rgbMap = function(width, height, rgb, step)
         {
           algo.NumSteps = width-1;
-          var HSV = QRgbToHSV(0xff0000);
+          var HSV = QRgbToHSV(rgb);
           //Create the HSV for the color
           var h,s,v;
           h = HSV.H;
@@ -176,11 +176,10 @@ var testAlgo;
 
 /**
 * Color RGBToQRgb
-* Color holds the definition of a Color in RGB format
 * @param r - the amount of Red 0-255
 * @param g - the amount of Green 0-255
 * @param b - the amount of Blue 0-255
-* @returns a QRgb value for the r,g,b
+* @returns a QRgb value for the color
 */
 function RGBToQRgb(r,g,b){
   return (r << 16) + (g << 8) + b;
@@ -191,7 +190,7 @@ function RGBToQRgb(r,g,b){
 * @param r - the amount of Red 0-255
 * @param g - the amount of Green 0-255
 * @param b - the amount of Blue 0-255
-* @returns an Object Containing H,S,V
+* @returns an Object Containing {H,S,V} for the color
 */
 function RGBToHSV(r,g,b) {
   //Values to return
@@ -235,16 +234,15 @@ function RGBToHSV(r,g,b) {
 
 /**
 * Color QRgbToRGB
-* Color holds the definition of a Color in RGB format
-* @param r - the amount of Red 0-255
-* @param g - the amount of Green 0-255
-* @param b - the amount of Blue 0-255
-* @returns a QRgb value for the r,g,b
+* @param QRgb - the QRgb representing the color
+* @returns an Object containing {Red, Green, Blue} for the color
 */
 function QRgbToRGB(QRgb){
-  //input validation
+  // remove alpha chanel
+  QRgb = QRgb & 0x00ffffff;
+  // input validation
   if(QRgb>0xFFFFFF){
-    QRgb=0xFFFFFF;
+    QRgb=0x65CA7B;
   }
   if(QRgb<0){
     QRgb=0;
@@ -254,14 +252,15 @@ function QRgbToRGB(QRgb){
 
 /**
 * Color QRgbToHSV
-* Color holds the definition of a Color in RGB format
-* @param QRgb - the QRgb value
-* @returns a QRgb value for the r,g,b
+* @param QRgb - the QRgb representing the color
+* @returns an Object Containing {H,S,V} for the color
 */
 function QRgbToHSV(QRgb){
+  // remove alpha chanel
+  QRgb = QRgb & 0x00ffffff;
   //input validation
   if(QRgb>0xFFFFFF){
-    QRgb=0xFFFFFF;
+    QRgb=0x6FDE7B; //Error Code 111 222 123
   }
   if(QRgb<0){
     QRgb=0;
@@ -312,7 +311,7 @@ function QRgbToHSV(QRgb){
 * @param H - Hue
 * @param S - Saturation
 * @param V - Value
-* @returns an Object containing {Red, Green, Blue}
+* @returns an Object containing {Red, Green, Blue} for the color
 */
 function HSVToRGB(h,s,v) {
   //return values
@@ -392,7 +391,7 @@ function HSVToRGB(h,s,v) {
 * @param H - Hue
 * @param S - Saturation
 * @param V - Value
-* @returns an Object containing {Red, Green, Blue}
+* @returns an Object containing {Red, Green, Blue} for the color
 */
 function HSVToQRgb(h,s,v) {
   //return values
