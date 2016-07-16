@@ -3,8 +3,6 @@
 * The algorithm fills the matrix with a spectrum of colors centered around
 * the user supplied color (bounded by the Hue Range).
 * The position of the user supplied color is then varied from Right/Left or Bottom/Top
-*
-*
 */
 
 // Development tool access
@@ -23,8 +21,9 @@ var testAlgo;
 
 		/**
 		* Custom Property - Hue Range
+		* The the how wide to distrute the spectrum.
 		*/
-		algo.HueRange = 720;
+		algo.HueRange = 180;
 		algo.properties.push("name:HueRange|type:range|display:Hue Range|values:0,720|write:setHueRange|read:getHueRange");
 
 		algo.setHueRange = function(setHueRangeValue)
@@ -39,6 +38,7 @@ var testAlgo;
 
 		/**
 		* Custom Property - Hue Direction
+		* The direcion to distribute the spectrum. If "both" center around the user selected color.
 		*/
 		algo.HueDirection = "Both";
 		algo.properties.push("name:HueDirection|type:list|display:Hue Direction|values:Clockwise,Both,Anti-Clockwise|write:setHueDirection|read:getHueDirection");
@@ -54,20 +54,23 @@ var testAlgo;
 		};
 
 		/**
-		* Custom Property - Pattern Direction
+		* Custom Property - Orientation
+		* The direction the ser color will move.
 		*/
-		algo.Pattern = "Horizontal";
-		algo.properties.push("name:Pattern|type:list|display:Direction|values:Horizontal,Vertical|write:setPattern|read:getPattern");
+		algo.Orientation = "Horizontal";
+		algo.properties.push("name:Orientation|type:list|display:Orientation|values:Horizontal,Vertical|write:setOrientation|read:getOrientation");
 
-		algo.setPattern = function(setPatternValue)
+		algo.setOrientation = function(setOrientationValue)
 		{
-			algo.Pattern = setPatternValue;
+			algo.Orientation = setOrientationValue;
 		};
 
-		algo.getPattern = function()
+		algo.getOrientation = function()
 		{
-			return ""+algo.Pattern;
+			return ""+algo.Orientation;
 		};
+
+		var util ={}; //object to store helper functions
 
 		/**
 		* The actual "algorithm" for this RGB script. Produces a map of
@@ -79,7 +82,7 @@ var testAlgo;
 		*/
 		algo.rgbMap = function(width, height, rgb, step)
 		{
-			var NumSteps = width-1;
+			var NumPos = util.getNumPos(width, height);
 			var HSV = QRgbToHSV(rgb);
 			//Create the HSV for the color
 			var h,s,v;
@@ -87,97 +90,22 @@ var testAlgo;
 			s = HSV.S;
 			v = HSV.V;
 
-			/*
-			* Create the array of Hues
-			* Workout the Hues
-			*
-			*/
-			var Hues = new Array (2*NumSteps+1);
-			var firstHue, hueStep;
-			var i = 0;
-			switch (algo.HueDirection) {
-				case "Clockwise":
-				firstHue = h;
-				hueStep = algo.HueRange/(NumSteps);
+			var Hues = util.getHues(h,NumPos); //Calculate the hue spectrum
+			var startPos = util.getStartPos(step,NumPos); //Calculate the position to start drawing
 
-				for(i=0; i<NumSteps+1;i++){
-					Hues[NumSteps+i]= firstHue+hueStep*i;
-					Hues[NumSteps-i]=Hues[NumSteps+i];
-				}
-				Hues[NumSteps]=h; //define mid point hue
-				break;
-
-				case "Anti-Clockwise":
-				firstHue = h;
-				hueStep = -algo.HueRange/(NumSteps);
-
-				for(i=0; i<NumSteps+1;i++){
-					Hues[NumSteps+i]= firstHue+hueStep*i;
-					Hues[NumSteps-i]=Hues[NumSteps+i];
-				}
-				Hues[NumSteps]=h; //define mid point hue
-				break;
-
-				case "Both":
-				firstHue = h-(algo.HueRange/2);
-				hueStep = (algo.HueRange/2)/(NumSteps);
-
-				for(i=0; i<NumSteps;i++){
-					Hues[i]= firstHue+hueStep*i;
-				}
-				Hues[NumSteps]=h; //define mid point hue
-				for(i=NumSteps+1; i<2*NumSteps+1;i++){
-					Hues[i]= firstHue+hueStep*i;
-				}
-				break;
-			}
-
-			//workout the starting pos for this step
-			var firstpos, pos, up;
-			i=0;
-			pos = 0;
-			up = true;
-			while (i!=step){
-				if (up){
-					pos++;
-					i++;
-				}
-				else {
-					pos--;
-					i++;
-				}
-				if (pos>=NumSteps){
-					up = false;
-				}
-				if (pos<=-NumSteps){
-					up = true;
-				}
-			}
-			firstpos = pos;
-
-			//create empty map
 			var map = new Array(height);
 			for (var y = 0; y < height; y++)
 			{
 				map[y] = [];
-				pos = firstpos; //Initialise pos
-				up = true;
 				for (var x = 0; x < width; x++)
 				{
-					map[y][x] = HSVToQRgb(Hues[pos],s,v);
-					//check direction
-					if (pos>=Hues.length-1){
-						up = false;
-					}
-					if (pos<=0){
-						up = true;
-					}
-					//new pos
-					if (up){
-						pos++;
-					}
-					else {
-						pos--;
+					switch (algo.Orientation) {
+						case "Horizontal":
+						map[y][x] = HSVToQRgb(Hues[startPos+x],s,v);
+						break;
+						case "Vertical":
+						map[y][x] = HSVToQRgb(Hues[startPos+y],s,v);
+						break;
 					}
 				}
 			}
@@ -193,11 +121,114 @@ var testAlgo;
 		*/
 		algo.rgbMapStepCount = function(width, height)
 		{
-			// All pixels in the map must be used exactly once, each one separately
-			// at a time. Therefore, the maximum number of steps produced by this
-			// script on a 5 * 5 grid is 25.
-			var NumSteps = width-1;
-			return 2*NumSteps;
+			return 2*(util.getNumPos(width, height)+1)-1;
+		};
+
+		/**
+		* Calculates the number of positions
+		*
+		* @param width The width of the map
+		* @param height The height of the map
+		* @return the number of starting positions the algorithm has
+		*/
+		util.getNumPos = function(width, height)
+		{
+			var value;
+			switch (algo.Orientation) {
+				case "Horizontal":
+				value = width;
+				break;
+				case "Vertical":
+				value = height;
+				break;
+			}
+			return value-1;
+		};
+
+		/**
+		* Calculates the Hue spectrum to be used in the algorithm
+		*
+		* @param h the starting hue
+		* @param NumPos The number of starting positions the algorithm has
+		* @return The Hue spectrum
+		*/
+		util.getHues = function(h, NumPos)
+		{
+			var Hues = new Array (2*NumPos+1);
+			var firstHue, hueStep;
+			var i = 0;
+			switch (algo.HueDirection) {
+				case "Clockwise":
+				firstHue = h;
+				hueStep = algo.HueRange/(NumPos);
+
+				for(i=0; i<NumPos+1;i++){
+					Hues[NumPos+i]= firstHue+hueStep*i;
+					Hues[NumPos-i]=Hues[NumPos+i];
+				}
+				Hues[NumPos]=h; //define mid point hue
+				break;
+
+				case "Anti-Clockwise":
+				firstHue = h;
+				hueStep = -algo.HueRange/(NumPos);
+
+				for(i=0; i<NumPos+1;i++){
+					Hues[NumPos+i]= firstHue+hueStep*i;
+					Hues[NumPos-i]=Hues[NumPos+i];
+				}
+				Hues[NumPos]=h; //define mid point hue
+				break;
+
+				case "Both":
+				firstHue = h-(algo.HueRange/2);
+				hueStep = (algo.HueRange/2)/(NumPos);
+
+				for(i=0; i<NumPos;i++){
+					Hues[i]= firstHue+hueStep*i;
+				}
+				Hues[NumPos]=h; //define mid point hue
+				for(i=NumPos+1; i<2*NumPos+1;i++){
+					Hues[i]= firstHue+hueStep*i;
+				}
+				break;
+			}
+
+			return Hues;
+		};
+
+		/**
+		* Calculates the postion in the spectrum array to start drawing given
+		* the current step.
+		*
+		* @param step the current RGB step
+		* @param NumPos The number of starting positions the algorithm has
+		* @return the postion to start drawing the current step
+		*/
+		util.getStartPos = function(step, NumPos)
+		{
+			//workout the starting pos for this step
+			var pos, up, i;
+			i=0;
+			pos = 0;
+			up = true;
+			while (i!=step){
+				if (up){
+					pos++;
+					i++;
+				}
+				else {
+					pos--;
+					i++;
+				}
+				if (pos>=NumPos){
+					up = false;
+				}
+				if (pos<=-NumPos){
+					up = true;
+				}
+			}
+			return pos;
 		};
 
 		// Development tool access
