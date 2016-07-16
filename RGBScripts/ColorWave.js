@@ -1,3 +1,12 @@
+/*
+* How It Works:
+* The algorithm fills the matrix with a spectrum of colors centered around
+* the user supplied color (bounded by the Hue Range).
+* The position of the user supplied color is then varied from Right/Left or Bottom/Top
+*
+*
+*/
+
 // Development tool access
 var testAlgo;
 
@@ -13,14 +22,11 @@ var testAlgo;
 		algo.properties = [];
 
 		/**
-		* Custom Property Definition
+		* Custom Property - Hue Range
 		*/
-		algo.HueRange = 120;
-		algo.properties.push("name:HueRange|type:range|display:Hue Range|values:0,360|write:setHueRange|read:getHueRange");
+		algo.HueRange = 720;
+		algo.properties.push("name:HueRange|type:range|display:Hue Range|values:0,720|write:setHueRange|read:getHueRange");
 
-		/**
-		* Custom Property Getter and Setter methods
-		*/
 		algo.setHueRange = function(setHueRangeValue)
 		{
 			algo.HueRange = setHueRangeValue;
@@ -31,12 +37,12 @@ var testAlgo;
 			return ""+algo.HueRange;
 		};
 
-		algo.HueDirection = "Clockwise";
-		algo.properties.push("name:HueDirection|type:list|display:Hue Direction|values:Clockwise,Both,Counter-Clockwise|write:setHueDirection|read:getHueDirection");
-
 		/**
-		* Custom Property Getter and Setter methods
+		* Custom Property - Hue Direction
 		*/
+		algo.HueDirection = "Both";
+		algo.properties.push("name:HueDirection|type:list|display:Hue Direction|values:Clockwise,Both,Anti-Clockwise|write:setHueDirection|read:getHueDirection");
+
 		algo.setHueDirection = function(setHueDirectionValue)
 		{
 			algo.HueDirection = setHueDirectionValue;
@@ -47,6 +53,21 @@ var testAlgo;
 			return ""+algo.HueDirection;
 		};
 
+		/**
+		* Custom Property - Pattern Direction
+		*/
+		algo.Pattern = "Horizontal";
+		algo.properties.push("name:Pattern|type:list|display:Direction|values:Horizontal,Vertical|write:setPattern|read:getPattern");
+
+		algo.setPattern = function(setPatternValue)
+		{
+			algo.Pattern = setPatternValue;
+		};
+
+		algo.getPattern = function()
+		{
+			return ""+algo.Pattern;
+		};
 
 		/**
 		* The actual "algorithm" for this RGB script. Produces a map of
@@ -66,27 +87,49 @@ var testAlgo;
 			s = HSV.S;
 			v = HSV.V;
 
-			// Workout the Hues
+			/*
+			* Create the array of Hues
+			* Workout the Hues
+			*
+			*/
 			var Hues = new Array (2*NumSteps+1);
 			var firstHue, hueStep;
+			var i = 0;
 			switch (algo.HueDirection) {
 				case "Clockwise":
 				firstHue = h;
-				hueStep = algo.HueRange/(2*NumSteps+1);
-				break;
-				case "Counter-Clockwise":
-				firstHue = h;
-				hueStep = -algo.HueRange/(2*NumSteps+1);
-				break;
-				case "Both":
-				firstHue = h-algo.HueRange;
-				hueStep = algo.HueRange/NumSteps;
-				break;
-			}
+				hueStep = algo.HueRange/(NumSteps);
 
-			var i = 0;
-			for(i=0; i<2*NumSteps+1;i++){
-				Hues[i]= firstHue+hueStep*i;
+				for(i=0; i<NumSteps+1;i++){
+					Hues[NumSteps+i]= firstHue+hueStep*i;
+					Hues[NumSteps-i]=Hues[NumSteps+i];
+				}
+				Hues[NumSteps]=h; //define mid point hue
+				break;
+
+				case "Anti-Clockwise":
+				firstHue = h;
+				hueStep = -algo.HueRange/(NumSteps);
+
+				for(i=0; i<NumSteps+1;i++){
+					Hues[NumSteps+i]= firstHue+hueStep*i;
+					Hues[NumSteps-i]=Hues[NumSteps+i];
+				}
+				Hues[NumSteps]=h; //define mid point hue
+				break;
+
+				case "Both":
+				firstHue = h-(algo.HueRange/2);
+				hueStep = (algo.HueRange/2)/(NumSteps);
+
+				for(i=0; i<NumSteps;i++){
+					Hues[i]= firstHue+hueStep*i;
+				}
+				Hues[NumSteps]=h; //define mid point hue
+				for(i=NumSteps+1; i<2*NumSteps+1;i++){
+					Hues[i]= firstHue+hueStep*i;
+				}
+				break;
 			}
 
 			//workout the starting pos for this step
@@ -122,7 +165,6 @@ var testAlgo;
 				for (var x = 0; x < width; x++)
 				{
 					map[y][x] = HSVToQRgb(Hues[pos],s,v);
-					//map[y][x] = rgb;
 					//check direction
 					if (pos>=Hues.length-1){
 						up = false;
@@ -156,7 +198,6 @@ var testAlgo;
 			// script on a 5 * 5 grid is 25.
 			var NumSteps = width-1;
 			return 2*NumSteps;
-			//width * height;
 		};
 
 		// Development tool access
