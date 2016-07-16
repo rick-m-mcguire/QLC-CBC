@@ -109,6 +109,8 @@ function Color(){
    * Sets the color based on a QRgb
    */
   this.setAsQRgb = function (QRgb){
+    // remove alpha chanel
+    QRgb = QRgb & 0x00ffffff;
     //input validation
     if(QRgb>0xFFFFFF){
       QRgb=0xFFFFFF;

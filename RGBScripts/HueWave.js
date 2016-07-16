@@ -1,3 +1,14 @@
+/*
+*
+* How It Works:
+* Color changes from HueStart to HueEnd in a Clockwise or Anti-Clockwise direction.
+*
+*
+*
+*
+*/
+
+
 // Development tool access
 var testAlgo;
 
@@ -5,31 +16,63 @@ var testAlgo;
 
   function()
   {
-    var algo = new Object;
+    var algo = {};
     algo.apiVersion = 2;
-    algo.name = "Template";
+    algo.name = "Hue Wave";
     algo.author = "Rick McGuire";
     algo.acceptColors = 0; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
-    algo.properties = new Array();
+    algo.properties = [];
 
-    /**
+    /**************************************************
     * Custom Property Definition
     */
-    algo.TemplateProperty = 2;
-    algo.properties.push("name:TemplateProperty|type:range|display:Number of Fixtures|values:1,40|write:setNumPieces|read:getNumPieces");
+    algo.HueStart = 0;
+    algo.properties.push("name:HueStart|type:range|display:Hue Start|values:0,360|write:setHueStart|read:getHueStart");
 
     /**
     * Custom Property Getter and Setter methods
     */
-    algo.setTemplateProperty = function(_preset)
-    {
-      algo.TemplateProperty = _preset;
-    }
+    algo.setHueStart = function(setHueStartValue) {
+      algo.HueStart = setHueStartValue*1;
+    };
 
-    algo.getTemplateProperty = function()
-    {
-      return ""+algo.TemplateProperty;
-    }
+    algo.getHueStart = function() {
+      return "" + algo.HueStart;
+    };
+
+    /**************************************************
+    * Custom Property Definition
+    */
+    algo.HueEnd = 180;
+    algo.properties.push("name:HueEnd|type:range|display:Hue End|values:0,360|write:setHueEnd|read:getHueEnd");
+
+    /**
+    * Custom Property Getter and Setter methods
+    */
+    algo.setHueEnd = function(setHueEndValue) {
+      algo.HueEnd = setHueEndValue*1;
+    };
+
+    algo.getHueEnd = function() {
+      return "" + algo.HueEnd;
+    };
+
+    /**************************************************
+    * Custom Property Definition
+    */
+    algo.Direction = "Clockwise";
+    algo.properties.push("name:Direction|type:list|display:Direction|values:Clockwise,Anti-Clockwise|write:setDirection|read:getDirection");
+
+    /**
+    * Custom Property Getter and Setter methods
+    */
+    algo.setDirection = function(setDirectionValue) {
+      algo.Direction = setDirectionValue;
+    };
+
+    algo.getDirection = function() {
+      return "" + algo.Direction;
+    };
 
     /**
     * The actual "algorithm" for this RGB script. Produces a map of
@@ -41,8 +84,61 @@ var testAlgo;
     */
     algo.rgbMap = function(width, height, rgb, step)
     {
-      return null;
-    }
+      var c;
+      var h,s,v,hueStep;
+      var mode;
+
+      h = algo.HueStart;
+      s = 1;
+      v = 1;
+
+      hueStep = 1;
+
+      mode = algo.Direction;
+      if (algo.getDegrees == 360){
+        mode = "Circle";
+      }
+
+      //create empty map
+      var map = new Array(height);
+
+      c = rgb; //TEST - remove
+      var rgbMapStepCount = algo.rgbMapStepCount();
+      for (var y = 0; y < height; y++)
+      {
+        map[y] = [];
+        for (var x = 0; x < width; x++)
+        {
+          switch (mode) {
+            case "Clockwise":
+            if(step<=(rgbMapStepCount+1)/2){
+              c = HSVToQRgb(algo.HueStart+step*hueStep,s,v);
+              map[y][x] = c;
+            }
+            else {
+              c = HSVToQRgb(algo.HueStart+(((rgbMapStepCount+1))-step)*hueStep,s,v);
+              map[y][x] = c;
+            }
+            break;
+            case "Anti-Clockwise":
+            if(step<=(rgbMapStepCount+1)/2){
+              c = HSVToQRgb(algo.HueStart-step*hueStep,s,v);
+              map[y][x] = c;
+            }
+            else {
+              c = HSVToQRgb(algo.HueStart-(((rgbMapStepCount+1))-step)*hueStep,s,v);
+              map[y][x] = c;
+            }
+            break;
+            case "Circle":
+            c = HSVToQRgb(algo.HueStart+step*hueStep,s,v);
+            map[y][x] = c;
+            break;
+          }
+        }
+      }
+      return map;
+    };
 
     /**
     * Tells RGB Matrix how many steps this algorithm produces with size($width, $height)
@@ -53,12 +149,42 @@ var testAlgo;
     */
     algo.rgbMapStepCount = function(width, height)
     {
-      // All pixels in the map must be used exactly once, each one separately
-      // at a time. Therefore, the maximum number of steps produced by this
-      // script on a 5 * 5 grid is 25.
-      return width * height;
-      //width * height;
-    }
+      var steps = algo.getDegrees();
+
+      if (steps == 360){ // if going all around the hue circle
+        return 359;
+      }
+      else { //going form Start to End and back -1.
+        return steps*2-1;
+      }
+    };
+
+    algo.getDegrees = function (){
+      var degrees;
+      if (algo.Direction == "Clockwise"){ // 0 to 360
+        if (algo.HueEnd > algo.HueStart){
+          degrees = algo.HueEnd-algo.HueStart;
+        }
+        else if (algo.HueEnd < algo.HueStart) {
+          degrees = algo.HueEnd-algo.HueStart+360;
+        }
+        else { // Hues are the same
+          degrees = 360;
+        }
+      }
+      else { // is Anti-Clockwise
+        if (algo.HueEnd > algo.HueStart){
+          degrees = algo.HueStart-algo.HueEnd+360;
+        }
+        else if (algo.HueEnd < algo.HueStart) {
+          degrees = algo.HueStart-algo.HueEnd;
+        }
+        else { // Hues are the same
+          degrees = 360;
+        }
+      }
+      return degrees;
+    };
 
     // Development tool access
     testAlgo = algo;
@@ -106,7 +232,7 @@ function RGBToHSV(r,g,b) {
   var hue; // the hue placeholder
 
   //Calculate Hue
-  if (delta == 0){
+  if (delta === 0){
     hue = 0;
   } else if (rp == cmax) {
     hue = 60*((gp-bp)/delta);
@@ -119,7 +245,7 @@ function RGBToHSV(r,g,b) {
   H = ((hue+360) % 360); //Hue value to return
 
   //Calculate Saturation
-  if (cmax == 0){
+  if (cmax === 0){
     S = 0;
   } else {
     S = delta / cmax;
@@ -143,7 +269,7 @@ function QRgbToRGB(QRgb){
   QRgb = QRgb & 0x00ffffff;
   // input validation
   if(QRgb>0xFFFFFF){
-    QRgb=0x65CA7B;
+    QRgb=0x65CA7B; //Error Code 111 222 123
   }
   if(QRgb<0){
     QRgb=0;
@@ -178,7 +304,7 @@ function QRgbToHSV(QRgb){
   var hue; // the hue placeholder
 
   //Calculete Hue
-  if (delta == 0){
+  if (delta === 0){
     hue = 0;
   } else if (rp == cmax) {
     hue = 60*((gp-bp)/delta);
@@ -191,7 +317,7 @@ function QRgbToHSV(QRgb){
   H = ((hue+360) % 360); //Hue value to return
 
   //Calculate Saturation
-  if (cmax == 0){
+  if (cmax === 0){
     S = 0;
   } else {
     S = delta / cmax;
@@ -235,7 +361,7 @@ function HSVToRGB(h,s,v) {
 
   var i, f, p, q, t;
 
-  if( s == 0 ) {
+  if( s === 0 ) {
     // achromatic (grey)
     r = Math.round(v*255);
     g = Math.round(v*255);
@@ -315,7 +441,7 @@ function HSVToQRgb(h,s,v) {
 
   var i, f, p, q, t;
 
-  if( s == 0 ) {
+  if( s === 0 ) {
     // achromatic (grey)
     r = Math.round(v*255);
     g = Math.round(v*255);
