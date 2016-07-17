@@ -5,12 +5,12 @@ var testAlgo;
 
   function()
   {
-    var algo = new Object;
+    var algo = {};
     algo.apiVersion = 2;
     algo.name = "Template";
     algo.author = "Rick McGuire";
     algo.acceptColors = 0; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
-    algo.properties = new Array();
+    algo.properties = [];
 
     /**
     * Custom Property Definition
@@ -24,12 +24,12 @@ var testAlgo;
     algo.setTemplateProperty = function(_preset)
     {
       algo.TemplateProperty = _preset;
-    }
+    };
 
     algo.getTemplateProperty = function()
     {
       return ""+algo.TemplateProperty;
-    }
+    };
 
     /**
     * The actual "algorithm" for this RGB script. Produces a map of
@@ -42,7 +42,7 @@ var testAlgo;
     algo.rgbMap = function(width, height, rgb, step)
     {
       return null;
-    }
+    };
 
     /**
     * Tells RGB Matrix how many steps this algorithm produces with size($width, $height)
@@ -58,7 +58,7 @@ var testAlgo;
       // script on a 5 * 5 grid is 25.
       return width * height;
       //width * height;
-    }
+    };
 
     // Development tool access
     testAlgo = algo;
@@ -106,7 +106,7 @@ function RGBToHSV(r,g,b) {
   var hue; // the hue placeholder
 
   //Calculate Hue
-  if (delta == 0){
+  if (delta === 0){
     hue = 0;
   } else if (rp == cmax) {
     hue = 60*((gp-bp)/delta);
@@ -119,7 +119,7 @@ function RGBToHSV(r,g,b) {
   H = ((hue+360) % 360); //Hue value to return
 
   //Calculate Saturation
-  if (cmax == 0){
+  if (cmax === 0){
     S = 0;
   } else {
     S = delta / cmax;
@@ -178,7 +178,7 @@ function QRgbToHSV(QRgb){
   var hue; // the hue placeholder
 
   //Calculete Hue
-  if (delta == 0){
+  if (delta === 0){
     hue = 0;
   } else if (rp == cmax) {
     hue = 60*((gp-bp)/delta);
@@ -191,7 +191,7 @@ function QRgbToHSV(QRgb){
   H = ((hue+360) % 360); //Hue value to return
 
   //Calculate Saturation
-  if (cmax == 0){
+  if (cmax === 0){
     S = 0;
   } else {
     S = delta / cmax;
@@ -235,7 +235,7 @@ function HSVToRGB(h,s,v) {
 
   var i, f, p, q, t;
 
-  if( s == 0 ) {
+  if( s === 0 ) {
     // achromatic (grey)
     r = Math.round(v*255);
     g = Math.round(v*255);
@@ -315,7 +315,7 @@ function HSVToQRgb(h,s,v) {
 
   var i, f, p, q, t;
 
-  if( s == 0 ) {
+  if( s === 0 ) {
     // achromatic (grey)
     r = Math.round(v*255);
     g = Math.round(v*255);
