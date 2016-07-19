@@ -5,7 +5,7 @@ var testAlgo;
 
     function()
     {
-        var algo = new Object;
+        var algo = new Object();
         algo.apiVersion = 2;
         algo.name = "Random Neon Colour";
         algo.author = "Rick McGuire";
@@ -25,7 +25,7 @@ var testAlgo;
 
         algo.getNumPieces = function()
         {
-          return ""+algo.NumPieces;
+          return algo.NumPieces;
         }
 
 
@@ -75,7 +75,7 @@ var testAlgo;
           }
 
           var i = 0;
-          var rgb = rgbColors[Math.floor(Math.random()*rgbColors.length)]; //initial random colour
+          rgb = rgbColors[Math.floor(Math.random()*rgbColors.length)]; //initial random colour
           while (i<algo.NumPieces)
           {
             //select random Variables
@@ -86,7 +86,7 @@ var testAlgo;
             }
 
             //check if selected cell is not black
-            if (map[r][c] == 0){
+            if (map[r][c] === 0){
               map[r][c]=rgb; //fill cell with colour
               i++; //increment counter
             }

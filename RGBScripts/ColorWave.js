@@ -33,7 +33,7 @@ var testAlgo;
 
 		algo.getHueRange = function()
 		{
-			return ""+algo.HueRange;
+			return algo.HueRange;
 		};
 
 		/**
@@ -50,7 +50,7 @@ var testAlgo;
 
 		algo.getHueDirection = function()
 		{
-			return ""+algo.HueDirection;
+			return algo.HueDirection;
 		};
 
 		/**
@@ -67,7 +67,7 @@ var testAlgo;
 
 		algo.getOrientation = function()
 		{
-			return ""+algo.Orientation;
+			return algo.Orientation;
 		};
 
 		var util ={}; //object to store helper functions

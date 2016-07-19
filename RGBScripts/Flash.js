@@ -30,7 +30,7 @@ var testAlgo;
 
     algo.getTemplateProperty = function()
     {
-      return ""+algo.TemplateProperty;
+      return algo.TemplateProperty;
     };
 
     /**
