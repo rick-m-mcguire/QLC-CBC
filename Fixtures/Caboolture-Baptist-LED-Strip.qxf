@@ -27,10 +27,10 @@
  </Channel>
  <Mode Name="Standard">
   <Physical>
-   <Bulb Type="" ColourTemperature="0" Lumens="0"/>
-   <Dimensions Width="0" Height="0" Weight="0" Depth="0"/>
-   <Lens DegreesMin="0" Name="Other" DegreesMax="0"/>
-   <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
+   <Bulb Type="LED" ColourTemperature="0" Lumens="0"/>
+   <Dimensions Height="300" Depth="0" Width="300" Weight="0"/>
+   <Lens DegreesMax="0" Name="Other" DegreesMin="0"/>
+   <Focus Type="Fixed" TiltMax="0" PanMax="0"/>
    <Technical PowerConsumption="0" DmxConnector="3-pin"/>
   </Physical>
   <Channel Number="0">Red</Channel>

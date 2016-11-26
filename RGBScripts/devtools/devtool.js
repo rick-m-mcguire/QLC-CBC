@@ -1,7 +1,7 @@
 /*
   Q Light Controller Plus
   devtool.js
-  
+
   Copyright (c) Heikki Junnila
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,8 @@
   limitations under the License.
 */
 
+var webUtil = {};
+
 function init()
 {
     var w = document.getElementById("width");
@@ -27,9 +29,14 @@ function init()
     if (!h.value)
         h.value = 15;
 
+    webUtil.properties = [];
+
     updateProperties();
+    loadCustomProperties();
+    updateCustomPropertiesList();
     updateStepCount();
     writeCurrentStep();
+
 }
 
 function updateStepCount()
@@ -63,7 +70,111 @@ function updateProperties()
     if (name)
         name.value = testAlgo.name;
     if (author)
-        author.value = testAlgo.author;    
+        author.value = testAlgo.author;
+}
+
+function loadCustomProperties()
+{
+  var NumProperties = testAlgo.properties.length;
+  if(NumProperties == 0){
+      return null; // exit function
+  }
+  var curProperty;
+  for (i=0; i < NumProperties; i++)
+  {
+    curProperty = testAlgo.properties[i];
+    webUtil.properties[i] = new Array(getPropertyDisplay(curProperty), getPropertyName(curProperty), getPropertyRead(curProperty), getPropertyWrite(curProperty));
+  }
+
+  var HTML ="";
+  for (i=0; i < NumProperties; i++)
+  {
+    HTML = HTML + webUtil.properties[i][0] +": <INPUT TYPE=\"text\" ID=\""+ webUtil.properties[i][1] +"\"  SIZE=\"3\" onChange=\"updateCustomProperties()\"/>" + "<br>";
+  }
+  HTML = HTML + "<INPUT TYPE=\"button\" value=\"Update\" onClick=\"updateCustomProperties()\"/><BR>";
+  document.getElementById("AlgorithmCustomProperties").innerHTML = HTML;
+}
+
+function updateCustomPropertiesList()
+{
+  var NumProperties = webUtil.properties.length;
+  if(NumProperties == 0){
+      return null; // exit function
+  }
+
+  var code = "";
+  for (i=0; i < NumProperties; i++)
+  {
+    code = "var "+webUtil.properties[i][1]+" = document.getElementById(\""+webUtil.properties[i][1]+"\");";
+    eval(code);
+    code = ""+webUtil.properties[i][1]+".value = testAlgo."+webUtil.properties[i][2]+"();"
+    eval(code);
+  }
+}
+
+function updateCustomProperties(){
+  var NumProperties = webUtil.properties.length;
+  if(NumProperties == 0){
+      return null; // exit function
+  }
+
+  var code = "";
+  for (i=0; i < NumProperties; i++)
+  {
+    code = "var "+webUtil.properties[i][1]+" = document.getElementById(\""+webUtil.properties[i][1]+"\");";
+    eval(code);
+    code = "testAlgo."+webUtil.properties[i][3]+"(parseInt("+webUtil.properties[i][1]+".value)"+ ");";
+    eval(code);
+  }
+  updateStepCount(); //reset RGBmatrix
+}
+
+function getPropertyDisplay(textProperties)
+{
+  var start = textProperties.indexOf("display:");
+  textProperties = textProperties.slice(start,textProperties.length);
+  var start = textProperties.indexOf(":");
+  textProperties = textProperties.slice(start+1,textProperties.length);
+  var end = textProperties.indexOf("|");
+  textProperties = textProperties.slice(0,end);
+
+  return textProperties;
+}
+
+function getPropertyWrite(textProperties)
+{
+  var start = textProperties.indexOf("write:");
+  textProperties = textProperties.slice(start,textProperties.length);
+  var start = textProperties.indexOf(":");
+  textProperties = textProperties.slice(start+1,textProperties.length);
+  var end = textProperties.indexOf("|");
+  textProperties = textProperties.slice(0,end);
+
+  return textProperties;
+}
+
+function getPropertyRead(textProperties)
+{
+  var start = textProperties.indexOf("read:");
+  textProperties = textProperties.slice(start,textProperties.length);
+  var start = textProperties.indexOf(":");
+  textProperties = textProperties.slice(start+1,textProperties.length);
+  var end = textProperties.indexOf("|"); //there is no last pipe
+  textProperties = textProperties.slice(0,textProperties.length);
+
+  return textProperties;
+}
+
+function getPropertyName(textProperties)
+{
+  var start = textProperties.indexOf("name:");
+  textProperties = textProperties.slice(start,textProperties.length);
+  var start = textProperties.indexOf(":");
+  textProperties = textProperties.slice(start+1,textProperties.length);
+  var end = textProperties.indexOf("|");
+  textProperties = textProperties.slice(0,end);
+
+  return textProperties;
 }
 
 function nextStep()

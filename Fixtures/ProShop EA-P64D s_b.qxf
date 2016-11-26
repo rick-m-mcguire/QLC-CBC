@@ -3,7 +3,7 @@
 <FixtureDefinition xmlns="http://qlcplus.sourceforge.net/FixtureDefinition">
  <Creator>
   <Name>Q Light Controller Plus</Name>
-  <Version>4.8.4</Version>
+  <Version>4.9.1</Version>
   <Author>MULTIMEDIA</Author>
  </Creator>
  <Manufacturer>ProShop</Manufacturer>
@@ -30,13 +30,15 @@
  </Channel>
  <Channel Name="Strobe">
   <Group Byte="0">Effect</Group>
-  <Capability Min="10" Max="57">Strobe Slow to Fast</Capability>
-  <Capability Min="60" Max="108">Pulse Slow Closed slow to fast</Capability>
-  <Capability Min="111" Max="159">Pulse fast Closed</Capability>
+  <Capability Min="0" Max="9">Strobe Off</Capability>
+  <Capability Min="10" Max="57">Strobe (Slow to Fast)</Capability>
+  <Capability Min="60" Max="108">Pulse Slow Closed (Slow to Fast)</Capability>
+  <Capability Min="111" Max="159">Pulse Fast Closed (Slow to Fast)</Capability>
   <Capability Min="162" Max="255">Random Strobe</Capability>
  </Channel>
  <Channel Name="Macro">
   <Group Byte="0">Effect</Group>
+  <Capability Min="0" Max="9">Macro Off</Capability>
   <Capability Min="10" Max="50">Colour Fade</Capability>
   <Capability Min="51" Max="91">Fade RGB only</Capability>
   <Capability Min="92" Max="132">colour fade</Capability>
@@ -47,8 +49,8 @@
  <Mode Name="Mode 1">
   <Physical>
    <Bulb Type="" ColourTemperature="0" Lumens="0"/>
-   <Dimensions Width="0" Height="0" Depth="0" Weight="0"/>
-   <Lens DegreesMin="0" DegreesMax="0" Name="Other"/>
+   <Dimensions Depth="0" Weight="0" Height="0" Width="0"/>
+   <Lens Name="Other" DegreesMin="0" DegreesMax="0"/>
    <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
    <Technical DmxConnector="5-pin" PowerConsumption="0"/>
   </Physical>
@@ -59,8 +61,8 @@
  <Mode Name="Mode 2">
   <Physical>
    <Bulb Type="" ColourTemperature="0" Lumens="0"/>
-   <Dimensions Width="0" Height="0" Depth="0" Weight="0"/>
-   <Lens DegreesMin="0" DegreesMax="0" Name="Other"/>
+   <Dimensions Depth="0" Weight="0" Height="0" Width="0"/>
+   <Lens Name="Other" DegreesMin="0" DegreesMax="0"/>
    <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
    <Technical DmxConnector="5-pin" PowerConsumption="0"/>
   </Physical>
@@ -72,8 +74,8 @@
  <Mode Name="Mode 3">
   <Physical>
    <Bulb Type="" ColourTemperature="0" Lumens="0"/>
-   <Dimensions Width="0" Height="0" Depth="0" Weight="0"/>
-   <Lens DegreesMin="0" DegreesMax="0" Name="Other"/>
+   <Dimensions Depth="0" Weight="0" Height="0" Width="0"/>
+   <Lens Name="Other" DegreesMin="0" DegreesMax="0"/>
    <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
    <Technical DmxConnector="5-pin" PowerConsumption="0"/>
   </Physical>

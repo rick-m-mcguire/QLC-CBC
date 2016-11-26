@@ -5,7 +5,7 @@ var testAlgo;
 
     function()
     {
-        var algo = new Object;
+        var algo = new Object();
         algo.apiVersion = 2;
         algo.name = "Random Cells";
         algo.author = "Rick McGuire";
@@ -24,7 +24,7 @@ var testAlgo;
 
         algo.getNumPieces = function()
         {
-          return ""+algo.NumPieces;
+          return algo.NumPieces;
         }
 
         /**
@@ -68,7 +68,7 @@ var testAlgo;
 			      c = Math.floor(Math.random() * width); // select column
 
             //check if selected cell is not black
-            if (map[r][c] == 0){
+            if (map[r][c] === 0){
               map[r][c]=rgb; //fill cell with colour
               i++; //increment counter
             }
