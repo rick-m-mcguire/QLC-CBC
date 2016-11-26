@@ -26,7 +26,7 @@ var testAlgo;
     algo.setNumFixtures = function(setNumFixturesValue)
     {
       util.created = false;
-      algo.NumFixtures = setNumFixturesValue;
+      algo.NumFixtures = parseInt(setNumFixturesValue);
     };
 
     algo.getNumFixtures = function()
@@ -43,7 +43,7 @@ var testAlgo;
     algo.setNumFadeSteps = function(setNumFadeStepsValue)
     {
       util.created = false;
-      algo.NumFadeSteps = setNumFadeStepsValue;
+      algo.NumFadeSteps = parseInt(setNumFadeStepsValue);
     };
 
     algo.getNumFadeSteps = function()
