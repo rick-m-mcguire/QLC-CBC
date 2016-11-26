@@ -7,48 +7,64 @@ var testAlgo;
   {
     var algo = {};
     algo.apiVersion = 2;
-    algo.name = "Flash";
+    algo.name = "SineWave";
     algo.author = "Rick McGuire";
     algo.acceptColors = 1; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
     algo.properties = [];
-    util = {}; //holder object for algorithm data
-    util.created = false;
-    util.width = 0;
-    util.height= 0;
-    util.stepMap = [];
+
+    /**
+    * Custom Property Definition
+    */
+    algo.IntensityMax = 100;
+    algo.properties.push("name:IntensityMax|type:range|display:IntensityMax|values:0,100|write:setIntensityMax|read:getIntensityMax");
 
     /**
     * Custom Property Getter and Setter methods
     */
-    algo.NumFixtures = 10;
-    algo.properties.push("name:NumFixtures|type:range|display:Number of Fixtures|values:1,40|write:setNumFixtures|read:getNumFixtures");
-
-    algo.setNumFixtures = function(setNumFixturesValue)
+    algo.setIntensityMax = function(_preset)
     {
-      util.created = false;
-      algo.NumFixtures = parseInt(setNumFixturesValue);
+      algo.IntensityMax = parseInt(_preset);
     };
 
-    algo.getNumFixtures = function()
+    algo.getIntensityMax = function()
     {
-      return algo.NumFixtures;
+      return ""+algo.IntensityMax;
     };
+
+    /**
+    * Custom Property Definition
+    */
+    algo.IntensityMin = 0;
+    algo.properties.push("name:IntensityMin|type:range|display:IntensityMin|values:0,100|write:setIntensityMin|read:getIntensityMin");
 
     /**
     * Custom Property Getter and Setter methods
     */
-    algo.NumFadeSteps = 10;
-    algo.properties.push("name:NumFadeSteps|type:range|display:Number of Fade Steps|values:1,40|write:setNumFadeSteps|read:getNumFadeSteps");
-
-    algo.setNumFadeSteps = function(setNumFadeStepsValue)
+    algo.setIntensityMin = function(_preset)
     {
-      util.created = false;
-      algo.NumFadeSteps = parseInt(setNumFadeStepsValue);
+      algo.IntensityMin = parseInt(_preset);
     };
 
-    algo.getNumFadeSteps = function()
+    algo.getIntensityMin = function()
     {
-      return algo.NumFadeSteps;
+      return ""+algo.IntensityMin;
+    };
+
+    /**
+    * Custom Property - Orientation
+    * The direction the ser color will move.
+    */
+    algo.Orientation = "Horizontal";
+    algo.properties.push("name:Orientation|type:list|display:Orientation|values:Horizontal,Vertical|write:setOrientation|read:getOrientation");
+
+    algo.setOrientation = function(setOrientationValue)
+    {
+      algo.Orientation = setOrientationValue;
+    };
+
+    algo.getOrientation = function()
+    {
+      return algo.Orientation;
     };
 
     /**
@@ -61,20 +77,30 @@ var testAlgo;
     */
     algo.rgbMap = function(width, height, rgb, step)
     {
-      util.create(width,height);
-      var color = QRgbToHSV(rgb);
-      var x, y, z;
-      //create a blank stepMap
-      map = new Array(height);
-      for(y=0;y<height;y++)
-      {
-        map[y] = new Array(width);
-        for (x=0;x<width;x++)
-        {
-          map[y][x] = HSVToQRgb(color.H,color.S,util.stepMap[y][x][step]);
-        }
-      }
-      return map;
+			var HSV = QRgbToHSV(rgb);
+			//Create the HSV for the color
+			var h,s,v;
+			h = HSV.H;
+			s = HSV.S;
+			v = HSV.V;
+
+			var map = new Array(height);
+			for (var y = 0; y < height; y++)
+			{
+				map[y] = [];
+				for (var x = 0; x < width; x++)
+				{
+					switch (algo.Orientation) {
+						case "Horizontal":
+						map[y][x] = HSVToQRgb(h,s,(algo.IntensityMax-algo.IntensityMin)/100*(Math.sin((step+x)*2*Math.PI/width)+1)/2+algo.IntensityMin/100);
+						break;
+						case "Vertical":
+						map[y][x] = HSVToQRgb(h,s,(algo.IntensityMax-algo.IntensityMin)/100*(Math.sin((step+y)*2*Math.PI/height)+1)/2+algo.IntensityMin/100);
+						break;
+					}
+				}
+			}
+			return map;
     };
 
     /**
@@ -89,122 +115,8 @@ var testAlgo;
       // All pixels in the map must be used exactly once, each one separately
       // at a time. Therefore, the maximum number of steps produced by this
       // script on a 5 * 5 grid is 25.
-      util.create(width,height);
-      return 1000;
+      return width * height;
       //width * height;
-    };
-
-    /**
-    * Description
-    *
-    * @param variable - Description
-    * @return Description
-    */
-    util.create = function(width, height)
-    {
-      //check if created map matches current dimentions
-      if ((util.width==width) & (util.height==height) & (util.created))
-      {
-        return null;
-      }
-      //create map
-      util.created = true;
-
-      //update map dimentions
-      util.width = width;
-      util.height = height;
-
-      var steps = algo.rgbMapStepCount(width,height);
-      var x, y, z;
-      //create a blank stepMap
-      util.stepMap = new Array(height);
-      for(y=0;y<height;y++)
-      {
-        util.stepMap[y] = new Array(width);
-        for (x=0;x<width;x++)
-        {
-          util.stepMap[y][x] = new Array(steps);
-          for(z=0;z<steps;z++)
-          {
-            util.stepMap[y][x][z] = 0;
-          }
-        }
-      }
-
-      //Draw
-      var time, drawing, modeTime;
-      for(y=0;y<height;y++)
-      {
-        for (x=0;x<width;x++)
-        {
-          time = 0;
-          mode = "Waiting";
-          modeTime = Math.floor(Math.random()*algo.NumFadeSteps*width*height/algo.NumFixtures);
-          while (time < (steps))
-          {
-            if (mode == "Waiting")
-            {
-              time = time + modeTime; // jump time to when mode time would = 0
-              modeTime = 0;
-            }
-            else
-            {
-              //draw flash
-              util.stepMap[y][x][time] = 1-(algo.NumFadeSteps-modeTime)/algo.NumFadeSteps;
-              time++;
-              modeTime--;
-            }
-
-            //calculate next mode time
-            if(modeTime === 0)
-            {
-              switch (mode) {
-                case "Drawing":
-                  mode = "Waiting";
-                  modeTime = Math.floor(Math.random()*algo.NumFadeSteps*width*height/algo.NumFixtures);
-                  break;
-                case "Waiting":
-                  mode = "Drawing";
-                  modeTime = algo.NumFadeSteps;
-                break;
-              }
-            }
-          }
-        }
-      }
-    };
-
-    /**
-    * Description
-    *
-    * @param variable - Description
-    * @return Description
-    */
-    util.name = function(width, height)
-    {
-      return null;
-    };
-
-    /**
-    * Description
-    *
-    * @param variable - Description
-    * @return Description
-    */
-    util.name = function(width, height)
-    {
-      return null;
-    };
-
-    /**
-    * Description
-    *
-    * @param variable - Description
-    * @return Description
-    */
-    util.name = function(width, height)
-    {
-      return null;
     };
 
     // Development tool access
