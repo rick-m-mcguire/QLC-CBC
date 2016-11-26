@@ -1,0 +1,172 @@
+<html>
+<head>
+  <Title> RGBScript - TemplateJS </Title>
+<SCRIPT SRC="../Color-Template.js"></SCRIPT>
+<SCRIPT type="text/javascript">
+
+function init(){
+  TestRGB();
+  TestQRgb();
+  TestHSV();
+  TestHSVLimits();
+}
+
+function getColorDetails(col) {
+  var result ="Result: "+"<br>";
+  result = result + "RGB: " + "R " + col.getRed8() +" G "+col.getGreen8()+" B "+col.getBlue8()+"<br>";
+  result = result + "QRgb: " + col.getQRgb()+"<br>";
+  result = result + "HSV: " + "H " + col.getHue() +" S " + col.getSat() + " V " + col.getVal();
+  return result;
+}
+
+function TestRGB(){
+  var col = new Color();
+  var Test ="";
+  //Test 1
+  Test ="Test: Set Color to Red via RGB, read back as RGB, QRgb, HSV";
+  document.getElementById("RGBTest1_Test").innerHTML = Test;
+  col.setAsRGB8(255,0,0);
+  document.getElementById("RGBTest1_Result").innerHTML = getColorDetails(col);
+
+  // Test 2
+  Test ="Test: Set Color to Green via RGB, read back as RGB, QRgb, HSV";
+  document.getElementById("RGBTest2_Test").innerHTML = Test;
+  col.setAsRGB8(0,255,0);
+  document.getElementById("RGBTest2_Result").innerHTML = getColorDetails(col);
+
+  //Test 3
+  Test ="Test: Set Color to Blue via RGB, read back as RGB, QRgb, HSV";
+  document.getElementById("RGBTest3_Test").innerHTML = Test;
+  col.setAsRGB8(0,0,255);
+  document.getElementById("RGBTest3_Result").innerHTML = getColorDetails(col);
+  // Test 4
+  Test ="Test: Set Color to Cyan via RGB, read back as RGB, QRgb, HSV";
+  document.getElementById("RGBTest4_Test").innerHTML = Test;
+  col.setAsRGB8(0,255,255);
+  document.getElementById("RGBTest4_Result").innerHTML = getColorDetails(col);
+  // Test 5
+  Test ="Test: Set Color to Gray via RGB, read back as RGB, QRgb, HSV";
+  document.getElementById("RGBTest5_Test").innerHTML = Test;
+  col.setAsRGB8(128,128,128);
+  document.getElementById("RGBTest5_Result").innerHTML = getColorDetails(col);
+}
+
+function TestQRgb(){
+  var col = new Color();
+  var Test ="";
+  //Test 1
+  Test ="Test: Set Color to Red via QRgb, read back as RGB, QRgb, HSV";
+  document.getElementById("QRgbTest1_Test").innerHTML = Test;
+  col.setAsQRgb(0xFF0000);
+  document.getElementById("QRgbTest1_Result").innerHTML = getColorDetails(col);
+
+  // Test 2
+  Test ="Test: Set Color to Green via QRgb, read back as RGB, QRgb, HSV";
+  document.getElementById("QRgbTest2_Test").innerHTML = Test;
+  col.setAsQRgb(0x00FF00);
+  document.getElementById("QRgbTest2_Result").innerHTML = getColorDetails(col);
+
+  //Test 3
+  Test ="Test: Set Color to Blue via QRgb, read back as RGB, QRgb, HSV";
+  document.getElementById("QRgbTest3_Test").innerHTML = Test;
+  col.setAsQRgb(0x0000FF);
+  document.getElementById("QRgbTest3_Result").innerHTML = getColorDetails(col);
+  // Test 4
+  Test ="Test: Set Color to Cyan via QRgb, read back as RGB, QRgb, HSV";
+  document.getElementById("QRgbTest4_Test").innerHTML = Test;
+  col.setAsQRgb(0x00FFFF);
+  document.getElementById("QRgbTest4_Result").innerHTML = getColorDetails(col);
+  // Test 5
+  Test ="Test: Set Color to Gray via QRgb, read back as RGB, QRgb, HSV";
+  document.getElementById("QRgbTest5_Test").innerHTML = Test;
+  col.setAsQRgb(0x808080);
+  document.getElementById("QRgbTest5_Result").innerHTML = getColorDetails(col);
+}
+
+function TestHSV(){
+  var col = new Color();
+  var Test ="";
+  //Test 1
+  Test ="Test: Set Color to Red via HSV, read back as RGB, QRgb, HSV";
+  document.getElementById("HSVTest1_Test").innerHTML = Test;
+  col.setAsHSV(0,1,1);
+  document.getElementById("HSVTest1_Result").innerHTML = getColorDetails(col);
+
+  // Test 2
+  Test ="Test: Set Color to Green via HSV, read back as RGB, QRgb, HSV";
+  document.getElementById("HSVTest2_Test").innerHTML = Test;
+  col.setAsHSV(120,1,1);
+  document.getElementById("HSVTest2_Result").innerHTML = getColorDetails(col);
+
+  //Test 3
+  Test ="Test: Set Color to Blue via HSV, read back as RGB, QRgb, HSV";
+  document.getElementById("HSVTest3_Test").innerHTML = Test;
+  col.setAsHSV(240,1,1);
+  document.getElementById("HSVTest3_Result").innerHTML = getColorDetails(col);
+  // Test 4
+  Test ="Test: Set Color to Cyan via HSV, read back as RGB, QRgb, HSV";
+  document.getElementById("HSVTest4_Test").innerHTML = Test;
+  col.setAsHSV(180,1,1);
+  document.getElementById("HSVTest4_Result").innerHTML = getColorDetails(col);
+  // Test 5
+  Test ="Test: Set Color to Gray via HSV, read back as RGB, QRgb, HSV";
+  document.getElementById("HSVTest5_Test").innerHTML = Test;
+  col.setAsHSV(0,0,0.5);
+  document.getElementById("HSVTest5_Result").innerHTML = getColorDetails(col);
+}
+
+function TestHSVLimits(){
+  var output = "";
+  for(i = -720;i<=720;i=i+10){
+    var c = new Color();
+    c.setAsHSV(i,1,1);
+    output = output + "Hue = "+i+" - "+c.getHue()+"<br>";
+  }
+  document.getElementById("TestHSVLimits").innerHTML = output;
+}
+
+</SCRIPT>
+
+</head>
+<body onload=init()>
+
+  <h1> Test Set RGB </h1>
+  <p id="RGBTest1_Test"></p>
+  <p id="RGBTest1_Result"></p>
+  <p id="RGBTest2_Test"></p>
+  <p id="RGBTest2_Result"></p>
+  <p id="RGBTest3_Test"></p>
+  <p id="RGBTest3_Result"></p>
+  <p id="RGBTest4_Test"></p>
+  <p id="RGBTest4_Result"></p>
+  <p id="RGBTest5_Test"></p>
+  <p id="RGBTest5_Result"></p>
+
+  <h1> Test Set QRgb </h1>
+  <p id="QRgbTest1_Test"></p>
+  <p id="QRgbTest1_Result"></p>
+  <p id="QRgbTest2_Test"></p>
+  <p id="QRgbTest2_Result"></p>
+  <p id="QRgbTest3_Test"></p>
+  <p id="QRgbTest3_Result"></p>
+  <p id="QRgbTest4_Test"></p>
+  <p id="QRgbTest4_Result"></p>
+  <p id="QRgbTest5_Test"></p>
+  <p id="QRgbTest5_Result"></p>
+
+  <h1> Test Set HSV </h1>
+  <p id="HSVTest1_Test"></p>
+  <p id="HSVTest1_Result"></p>
+  <p id="HSVTest2_Test"></p>
+  <p id="HSVTest2_Result"></p>
+  <p id="HSVTest3_Test"></p>
+  <p id="HSVTest3_Result"></p>
+  <p id="HSVTest4_Test"></p>
+  <p id="HSVTest4_Result"></p>
+  <p id="HSVTest5_Test"></p>
+  <p id="HSVTest5_Result"></p>
+
+  <h1> Test Set HSV Limits</h1>
+  <p id="TestHSVLimits"></p>
+
+</body>
