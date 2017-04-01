@@ -1,3 +1,14 @@
+/*
+*
+* How It Works:
+* Color changes from HueStart to HueEnd in a Clockwise or Anti-Clockwise direction.
+*
+*
+*
+*
+*/
+
+
 // Development tool access
 var testAlgo;
 
@@ -7,48 +18,60 @@ var testAlgo;
   {
     var algo = {};
     algo.apiVersion = 2;
-    algo.name = "Flash";
+    algo.name = "Hue Wave";
     algo.author = "Rick McGuire";
-    algo.acceptColors = 1; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
+    algo.acceptColors = 0; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
     algo.properties = [];
-    util = {}; //holder object for algorithm data
-    util.created = false;
-    util.width = 0;
-    util.height= 0;
-    util.stepMap = [];
+
+    /**************************************************
+    * Custom Property Definition
+    */
+    algo.HueStart = 0;
+    algo.properties.push("name:HueStart|type:range|display:Hue Start|values:0,360|write:setHueStart|read:getHueStart");
 
     /**
     * Custom Property Getter and Setter methods
     */
-    algo.NumFixtures = 10;
-    algo.properties.push("name:NumFixtures|type:range|display:Number of Fixtures|values:1,40|write:setNumFixtures|read:getNumFixtures");
-
-    algo.setNumFixtures = function(setNumFixturesValue)
-    {
-      util.created = false;
-      algo.NumFixtures = parseInt(setNumFixturesValue);
+    algo.setHueStart = function(setHueStartValue) {
+      algo.HueStart = setHueStartValue*1;
     };
 
-    algo.getNumFixtures = function()
-    {
-      return algo.NumFixtures;
+    algo.getHueStart = function() {
+      return "" + algo.HueStart;
     };
+
+    /**************************************************
+    * Custom Property Definition
+    */
+    algo.HueEnd = 180;
+    algo.properties.push("name:HueEnd|type:range|display:Hue End|values:0,360|write:setHueEnd|read:getHueEnd");
 
     /**
     * Custom Property Getter and Setter methods
     */
-    algo.NumFadeSteps = 10;
-    algo.properties.push("name:NumFadeSteps|type:range|display:Number of Fade Steps|values:1,40|write:setNumFadeSteps|read:getNumFadeSteps");
-
-    algo.setNumFadeSteps = function(setNumFadeStepsValue)
-    {
-      util.created = false;
-      algo.NumFadeSteps = parseInt(setNumFadeStepsValue);
+    algo.setHueEnd = function(setHueEndValue) {
+      algo.HueEnd = setHueEndValue*1;
     };
 
-    algo.getNumFadeSteps = function()
-    {
-      return algo.NumFadeSteps;
+    algo.getHueEnd = function() {
+      return "" + algo.HueEnd;
+    };
+
+    /**************************************************
+    * Custom Property Definition
+    */
+    algo.Direction = "Clockwise";
+    algo.properties.push("name:Direction|type:list|display:Direction|values:Clockwise,Anti-Clockwise|write:setDirection|read:getDirection");
+
+    /**
+    * Custom Property Getter and Setter methods
+    */
+    algo.setDirection = function(setDirectionValue) {
+      algo.Direction = setDirectionValue;
+    };
+
+    algo.getDirection = function() {
+      return "" + algo.Direction;
     };
 
     /**
@@ -61,17 +84,57 @@ var testAlgo;
     */
     algo.rgbMap = function(width, height, rgb, step)
     {
-      util.create(width,height);
-      var color = QRgbToHSV(rgb);
-      var x, y, z;
-      //create a blank stepMap
-      map = new Array(height);
-      for(y=0;y<height;y++)
+      var c;
+      var h,s,v,hueStep;
+      var mode;
+
+      h = algo.HueStart;
+      s = 1;
+      v = 1;
+
+      hueStep = 1;
+
+      mode = algo.Direction;
+      if (algo.getDegrees == 360){
+        mode = "Circle";
+      }
+
+      //create empty map
+      var map = new Array(height);
+
+      c = rgb; //TEST - remove
+      var rgbMapStepCount = algo.rgbMapStepCount();
+      for (var y = 0; y < height; y++)
       {
-        map[y] = new Array(width);
-        for (x=0;x<width;x++)
+        map[y] = [];
+        for (var x = 0; x < width; x++)
         {
-          map[y][x] = HSVToQRgb(color.H,color.S,util.stepMap[y][x][step]);
+          switch (mode) {
+            case "Clockwise":
+            if(step<=(rgbMapStepCount+1)/2){
+              c = HSVToQRgb(algo.HueStart+step*hueStep,s,v);
+              map[y][x] = c;
+            }
+            else {
+              c = HSVToQRgb(algo.HueStart+(((rgbMapStepCount+1))-step)*hueStep,s,v);
+              map[y][x] = c;
+            }
+            break;
+            case "Anti-Clockwise":
+            if(step<=(rgbMapStepCount+1)/2){
+              c = HSVToQRgb(algo.HueStart-step*hueStep,s,v);
+              map[y][x] = c;
+            }
+            else {
+              c = HSVToQRgb(algo.HueStart-(((rgbMapStepCount+1))-step)*hueStep,s,v);
+              map[y][x] = c;
+            }
+            break;
+            case "Circle":
+            c = HSVToQRgb(algo.HueStart+step*hueStep,s,v);
+            map[y][x] = c;
+            break;
+          }
         }
       }
       return map;
@@ -86,125 +149,41 @@ var testAlgo;
     */
     algo.rgbMapStepCount = function(width, height)
     {
-      // All pixels in the map must be used exactly once, each one separately
-      // at a time. Therefore, the maximum number of steps produced by this
-      // script on a 5 * 5 grid is 25.
-      util.create(width,height);
-      return 1000;
-      //width * height;
+      var steps = algo.getDegrees();
+
+      if (steps == 360){ // if going all around the hue circle
+        return 359;
+      }
+      else { //going form Start to End and back -1.
+        return steps*2-1;
+      }
     };
 
-    /**
-    * Description
-    *
-    * @param variable - Description
-    * @return Description
-    */
-    util.create = function(width, height)
-    {
-      //check if created map matches current dimentions
-      if ((util.width==width) & (util.height==height) & (util.created))
-      {
-        return null;
-      }
-      //create map
-      util.created = true;
-
-      //update map dimentions
-      util.width = width;
-      util.height = height;
-
-      var steps = algo.rgbMapStepCount(width,height);
-      var x, y, z;
-      //create a blank stepMap
-      util.stepMap = new Array(height);
-      for(y=0;y<height;y++)
-      {
-        util.stepMap[y] = new Array(width);
-        for (x=0;x<width;x++)
-        {
-          util.stepMap[y][x] = new Array(steps);
-          for(z=0;z<steps;z++)
-          {
-            util.stepMap[y][x][z] = 0;
-          }
+    algo.getDegrees = function (){
+      var degrees;
+      if (algo.Direction == "Clockwise"){ // 0 to 360
+        if (algo.HueEnd > algo.HueStart){
+          degrees = algo.HueEnd-algo.HueStart;
+        }
+        else if (algo.HueEnd < algo.HueStart) {
+          degrees = algo.HueEnd-algo.HueStart+360;
+        }
+        else { // Hues are the same
+          degrees = 360;
         }
       }
-
-      //Draw
-      var time, drawing, modeTime;
-      for(y=0;y<height;y++)
-      {
-        for (x=0;x<width;x++)
-        {
-          time = 0;
-          mode = "Waiting";
-          modeTime = Math.floor(Math.random()*algo.NumFadeSteps*width*height/algo.NumFixtures);
-          while (time < (steps))
-          {
-            if (mode == "Waiting")
-            {
-              time = time + modeTime; // jump time to when mode time would = 0
-              modeTime = 0;
-            }
-            else
-            {
-              //draw flash
-              util.stepMap[y][x][time] = 1-(algo.NumFadeSteps-modeTime)/algo.NumFadeSteps;
-              time++;
-              modeTime--;
-            }
-
-            //calculate next mode time
-            if(modeTime === 0)
-            {
-              switch (mode) {
-                case "Drawing":
-                  mode = "Waiting";
-                  modeTime = Math.floor(Math.random()*algo.NumFadeSteps*width*height/algo.NumFixtures);
-                  break;
-                case "Waiting":
-                  mode = "Drawing";
-                  modeTime = algo.NumFadeSteps;
-                break;
-              }
-            }
-          }
+      else { // is Anti-Clockwise
+        if (algo.HueEnd > algo.HueStart){
+          degrees = algo.HueStart-algo.HueEnd+360;
+        }
+        else if (algo.HueEnd < algo.HueStart) {
+          degrees = algo.HueStart-algo.HueEnd;
+        }
+        else { // Hues are the same
+          degrees = 360;
         }
       }
-    };
-
-    /**
-    * Description
-    *
-    * @param variable - Description
-    * @return Description
-    */
-    util.name = function(width, height)
-    {
-      return null;
-    };
-
-    /**
-    * Description
-    *
-    * @param variable - Description
-    * @return Description
-    */
-    util.name = function(width, height)
-    {
-      return null;
-    };
-
-    /**
-    * Description
-    *
-    * @param variable - Description
-    * @return Description
-    */
-    util.name = function(width, height)
-    {
-      return null;
+      return degrees;
     };
 
     // Development tool access
@@ -290,7 +269,7 @@ function QRgbToRGB(QRgb){
   QRgb = QRgb & 0x00ffffff;
   // input validation
   if(QRgb>0xFFFFFF){
-    QRgb=0x65CA7B;
+    QRgb=0x65CA7B; //Error Code 111 222 123
   }
   if(QRgb<0){
     QRgb=0;
