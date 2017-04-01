@@ -123,7 +123,7 @@ function updateCustomProperties(){
   {
     code = "var "+webUtil.properties[i][1]+" = document.getElementById(\""+webUtil.properties[i][1]+"\");";
     eval(code);
-    code = "testAlgo."+webUtil.properties[i][3]+"(parseInt("+webUtil.properties[i][1]+".value)"+ ");";
+    code = "testAlgo."+webUtil.properties[i][3]+"("+webUtil.properties[i][1]+".value"+ ");";
     eval(code);
   }
   updateStepCount(); //reset RGBmatrix
