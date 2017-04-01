@@ -13,23 +13,35 @@ var testAlgo;
         algo.properties = new Array();
 
         /**
-         * Custom Property Definition
+         * Hue Range Property - TODO Description
          */
         algo.HueRange = 30;
         algo.properties.push("name:HueRange|type:range|display:Hue Range|values:0,360|write:setHueRange|read:getHueRange");
 
-        algo.NumSteps = 10;
-        /**
-         * Custom Property Getter and Setter methods
-         */
-        algo.setHueRange = function(_preset)
+        algo.setHueRange = function(setHueRangeValue)
         {
-          algo.HueRange = _preset;
+          algo.HueRange = setHueRangeValue;
         }
 
         algo.getHueRange = function()
         {
-          return ""+algo.HueRange;
+          return algo.HueRange;
+        }
+
+        /**
+         * Hue Range Property - TODO Description
+         */
+        algo.NumSteps = 30;
+        algo.properties.push("name:NumSteps|type:range|display:Steps|values:0,360|write:setNumSteps|read:getNumSteps");
+
+        algo.setNumSteps = function(setNumStepsValue)
+        {
+          algo.NumSteps = setNumStepsValue;
+        }
+
+        algo.getNumSteps = function()
+        {
+          return algo.NumSteps;
         }
 
         /**
