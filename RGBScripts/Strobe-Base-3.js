@@ -10,7 +10,7 @@ var testAlgo;
   function() {
     var algo = {};
     algo.apiVersion = 2;
-    algo.name = "Strobe base of 4";
+    algo.name = "Strobe Base 3";
     algo.author = "Rick McGuire";
     algo.acceptColors = 2; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
     algo.properties = [];
@@ -19,8 +19,8 @@ var testAlgo;
     * Custom Property - Duty Steps
     */
     algo.DutySteps = 1;
-    algo.CycleSteps = 5;
-    algo.properties.push("name:DutySteps|type:range|display:Duty Steps|values:1,5|write:setDutySteps|read:getDutySteps");
+    algo.CycleSteps = 3;
+    algo.properties.push("name:DutySteps|type:range|display:Duty Steps|values:1,3|write:setDutySteps|read:getDutySteps");
 
     /**
     * Custom Property - Duty Steps
@@ -85,7 +85,7 @@ var testAlgo;
     */
     algo.rgbMapStepCount = function(width, height)
     {
-      return 5;
+      return 3;
     };
 
     // Development tool access
