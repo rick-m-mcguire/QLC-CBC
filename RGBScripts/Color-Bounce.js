@@ -1,3 +1,8 @@
+/*
+ * NOTE: Seems to be an issue where if the algorithm things it has 2 colours it
+ * fades to black.
+*/
+
 // Development tool access
 var testAlgo;
 
@@ -7,15 +12,21 @@ var testAlgo;
     {
         var algo = new Object;
         algo.apiVersion = 2;
-        algo.name = "ColorBounce";
+        algo.name = "Color Bounce";
         algo.author = "Rick McGuire";
 		    algo.acceptColors = 1; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
         algo.properties = new Array();
 
+        //Set properties
+        algo.HueRange = 30;
+        //Number of colour steps. This can not be set but user as it affects the total number of steps
+        algo.NumSteps = 9;
+
+
         /**
          * Hue Range Property - TODO Description
          */
-        algo.HueRange = 30;
+
         algo.properties.push("name:HueRange|type:range|display:Hue Range|values:0,360|write:setHueRange|read:getHueRange");
 
         algo.setHueRange = function(setHueRangeValue)
@@ -26,22 +37,6 @@ var testAlgo;
         algo.getHueRange = function()
         {
           return algo.HueRange;
-        }
-
-        /**
-         * Hue Range Property - TODO Description
-         */
-        algo.NumSteps = 30;
-        algo.properties.push("name:NumSteps|type:range|display:Steps|values:0,360|write:setNumSteps|read:getNumSteps");
-
-        algo.setNumSteps = function(setNumStepsValue)
-        {
-          algo.NumSteps = setNumStepsValue;
-        }
-
-        algo.getNumSteps = function()
-        {
-          return algo.NumSteps;
         }
 
         /**
@@ -69,19 +64,19 @@ var testAlgo;
           var up = true;
           while (i!=step){
             if (up){
-              newHue = newHue+algo.HueRange/algo.NumSteps;
+              newHue = newHue+algo.HueRange/(algo.NumSteps);
               pos++;
               i++;
             }
             else {
-              newHue = newHue-algo.HueRange/algo.NumSteps;
+              newHue = newHue-algo.HueRange/(algo.NumSteps);
               pos--;
               i++;
             }
-            if (pos>algo.NumSteps){
+            if (pos>=algo.NumSteps){
               up = false;
             }
-            if (pos<-algo.NumSteps){
+            if (pos<=-algo.NumSteps){
               up = true;
             }
           }
@@ -111,11 +106,7 @@ var testAlgo;
          */
         algo.rgbMapStepCount = function(width, height)
         {
-            // All pixels in the map must be used exactly once, each one separately
-            // at a time. Therefore, the maximum number of steps produced by this
-            // script on a 5 * 5 grid is 25.
-            return 4*algo.NumSteps;
-			      //width * height;
+            return 4*algo.NumSteps; //fix the number of steps to 36 TODO: make dynamic if can one day.
         }
 
         // Development tool access
