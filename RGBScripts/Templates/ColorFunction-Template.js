@@ -16,7 +16,7 @@ var testAlgo;
     * Custom Property Definition
     */
     algo.TemplateProperty = 2;
-    algo.properties.push("name:TemplateProperty|type:range|display:Number of Fixtures|values:1,40|write:setNumPieces|read:getNumPieces");
+    algo.properties.push("name:TemplateProperty|type:range|display:TemplateProperty|values:1,40|write:setTemplateProperty|read:getTemplateProperty");
 
     /**
     * Custom Property Getter and Setter methods
