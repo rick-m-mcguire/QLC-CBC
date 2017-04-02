@@ -9,7 +9,7 @@ var testAlgo;
     algo.apiVersion = 2;
     algo.name = "Sine-Wave";
     algo.author = "Rick McGuire";
-    algo.acceptColors = 1; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
+    algo.acceptColors = 2; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
     algo.properties = [];
 
     /**
