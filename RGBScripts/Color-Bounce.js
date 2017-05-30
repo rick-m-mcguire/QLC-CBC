@@ -106,7 +106,7 @@ var testAlgo;
          */
         algo.rgbMapStepCount = function(width, height)
         {
-            return 4*algo.NumSteps; //fix the number of steps to 36 TODO: make dynamic if can one day.
+            return 4*Math.max(width,height);
         }
 
         // Development tool access
@@ -132,7 +132,7 @@ var testAlgo;
 * @returns a QRgb value for the color
 */
 function RGBToQRgb(r,g,b){
-  return (r << 16) + (g << 8) + b;
+  return (r << 16) + (g << 8) + (b << 0); //bitwise shift blue becuase otherwise its treated as a string.
 }
 
 /**
@@ -155,7 +155,7 @@ function RGBToHSV(r,g,b) {
   var hue; // the hue placeholder
 
   //Calculate Hue
-  if (delta == 0){
+  if (delta === 0){
     hue = 0;
   } else if (rp == cmax) {
     hue = 60*((gp-bp)/delta);
@@ -168,7 +168,7 @@ function RGBToHSV(r,g,b) {
   H = ((hue+360) % 360); //Hue value to return
 
   //Calculate Saturation
-  if (cmax == 0){
+  if (cmax === 0){
     S = 0;
   } else {
     S = delta / cmax;
@@ -227,7 +227,7 @@ function QRgbToHSV(QRgb){
   var hue; // the hue placeholder
 
   //Calculete Hue
-  if (delta == 0){
+  if (delta === 0){
     hue = 0;
   } else if (rp == cmax) {
     hue = 60*((gp-bp)/delta);
@@ -240,7 +240,7 @@ function QRgbToHSV(QRgb){
   H = ((hue+360) % 360); //Hue value to return
 
   //Calculate Saturation
-  if (cmax == 0){
+  if (cmax === 0){
     S = 0;
   } else {
     S = delta / cmax;
@@ -284,7 +284,7 @@ function HSVToRGB(h,s,v) {
 
   var i, f, p, q, t;
 
-  if( s == 0 ) {
+  if( s === 0 ) {
     // achromatic (grey)
     r = Math.round(v*255);
     g = Math.round(v*255);
@@ -364,7 +364,7 @@ function HSVToQRgb(h,s,v) {
 
   var i, f, p, q, t;
 
-  if( s == 0 ) {
+  if( s === 0 ) {
     // achromatic (grey)
     r = Math.round(v*255);
     g = Math.round(v*255);
@@ -412,5 +412,5 @@ function HSVToQRgb(h,s,v) {
       break;
     }
   }
-  return (r << 16) + (g << 8) + b;
+  return (r << 16) + (g << 8) + (b << 0); //bitwise shift blue becuase otherwise its treated as a string.
 }

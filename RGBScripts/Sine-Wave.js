@@ -142,7 +142,7 @@ var testAlgo;
 * @returns a QRgb value for the color
 */
 function RGBToQRgb(r,g,b){
-  return (r << 16) + (g << 8) + b;
+  return (r << 16) + (g << 8) + (b << 0); //bitwise shift blue becuase otherwise its treated as a string.
 }
 
 /**
@@ -422,5 +422,5 @@ function HSVToQRgb(h,s,v) {
       break;
     }
   }
-  return (r << 16) + (g << 8) + b;
+  return (r << 16) + (g << 8) + (b << 0); //bitwise shift blue becuase otherwise its treated as a string.
 }

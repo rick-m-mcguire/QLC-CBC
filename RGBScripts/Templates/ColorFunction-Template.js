@@ -13,23 +13,21 @@ var testAlgo;
     algo.properties = [];
 
     /**
-    * Custom Property Definition
-    */
-    algo.TemplateProperty = 2;
-    algo.properties.push("name:TemplateProperty|type:range|display:TemplateProperty|values:1,40|write:setTemplateProperty|read:getTemplateProperty");
+     * Custom Property Definition - TemplateProperty
+     */
+    algo.TemplateProperty = 0;
+    algo.properties.push("name:TemplateProperty|type:range|display:TemplateProperty|values:0,255|write:setTemplateProperty|read:getTemplateProperty");
 
     /**
-    * Custom Property Getter and Setter methods
-    */
-    algo.setTemplateProperty = function(_preset)
-    {
-      algo.TemplateProperty = _preset;
-    };
+     * Custom Property Getter and Setter methods
+     */
+    algo.setTemplateProperty = function(_TemplatePropertyValue) {
+      algo.TemplateProperty = _TemplatePropertyValue;
+    }
 
-    algo.getTemplateProperty = function()
-    {
-      return ""+algo.TemplateProperty;
-    };
+    algo.getTemplateProperty = function() {
+      return algo.TemplateProperty;
+    }
 
     /**
     * The actual "algorithm" for this RGB script. Produces a map of
@@ -83,7 +81,7 @@ var testAlgo;
 * @returns a QRgb value for the color
 */
 function RGBToQRgb(r,g,b){
-  return (r << 16) + (g << 8) + b;
+  return (r << 16) + (g << 8) + (b << 0); //bitwise shift blue becuase otherwise its treated as a string.
 }
 
 /**
@@ -363,5 +361,5 @@ function HSVToQRgb(h,s,v) {
       break;
     }
   }
-  return (r << 16) + (g << 8) + b;
+  return (r << 16) + (g << 8) + (b << 0); //bitwise shift blue becuase otherwise its treated as a string.
 }
