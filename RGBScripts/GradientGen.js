@@ -4,44 +4,45 @@ var testAlgo;
 (
 
   function() {
-    var algo = new Object;
+    var algo = {};
     algo.apiVersion = 2;
-    algo.name = "Template";
+    algo.name = "Gradient Generator";
     algo.author = "Rick McGuire";
-    algo.acceptColors = 1; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
-    algo.properties = new Array();
+
+    util = {}; //holder object for algorithm data
+
+    algo.acceptColors = 0; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
+    algo.properties = [];
 
     /**
      * Custom Property Definition - GradientMode
      */
     algo.GradientMode = "RGB";
-    algo.properties.push("name:GradientMode|type:list|display:GradientMode|values:RGB,HSV|write:setGradientMode|read:getGradientMode");
+    algo.properties.push("name:GradientMode|type:list|display:GradientMode|values:RGB,HSV,HSV-Clockwise,HSV-CounterClockwise|write:setGradientMode|read:getGradientMode");
 
     /**
      * Custom Property Getter and Setter methods
      */
     algo.setGradientMode = function(_GradientModeValue) {
       algo.GradientMode = _GradientModeValue;
-    }
+    };
 
     algo.getGradientMode = function() {
       return algo.GradientMode;
-    }
+    };
 
     /**
-    * Custom Property - Orientation
-    * The direction the ser color will move.
-    */
+     * Custom Property - Orientation
+     * The direction the ser color will move.
+     */
     algo.Orientation = "Horizontal";
     algo.properties.push("name:Orientation|type:list|display:Orientation|values:Horizontal,Vertical|write:setOrientation|read:getOrientation");
 
-    algo.setOrientation = function(_OrientationValue)
-    {
+    algo.setOrientation = function(_OrientationValue) {
       algo.Orientation = _OrientationValue;
     };
 
-    algo.getOrientation = function()
-    {
+    algo.getOrientation = function() {
       return algo.Orientation;
     };
 
@@ -55,12 +56,12 @@ var testAlgo;
      * Custom Property Getter and Setter methods
      */
     algo.setColour_1_Red = function(_Colour_1_RedValue) {
-      algo.Colour_1_Red = _Colour_1_RedValue;
-    }
+      algo.Colour_1_Red = Math.floor(_Colour_1_RedValue);
+    };
 
     algo.getColour_1_Red = function() {
       return algo.Colour_1_Red;
-    }
+    };
 
     /**
      * Custom Property Definition - Colour_1_Green
@@ -72,12 +73,12 @@ var testAlgo;
      * Custom Property Getter and Setter methods
      */
     algo.setColour_1_Green = function(_Colour_1_GreenValue) {
-      algo.Colour_1_Green = _Colour_1_GreenValue;
-    }
+      algo.Colour_1_Green = Math.floor(_Colour_1_GreenValue);
+    };
 
     algo.getColour_1_Green = function() {
       return algo.Colour_1_Green;
-    }
+    };
 
     /**
      * Custom Property Definition - Colour_1_Blue
@@ -89,12 +90,12 @@ var testAlgo;
      * Custom Property Getter and Setter methods
      */
     algo.setColour_1_Blue = function(_Colour_1_BlueValue) {
-      algo.Colour_1_Blue = _Colour_1_BlueValue;
-    }
+      algo.Colour_1_Blue = Math.floor(_Colour_1_BlueValue);
+    };
 
     algo.getColour_1_Blue = function() {
       return algo.Colour_1_Blue;
-    }
+    };
 
     /**
      * Custom Property Definition - Colour_2_Red
@@ -106,12 +107,12 @@ var testAlgo;
      * Custom Property Getter and Setter methods
      */
     algo.setColour_2_Red = function(_Colour_2_RedValue) {
-      algo.Colour_2_Red = _Colour_2_RedValue;
-    }
+      algo.Colour_2_Red = Math.floor(_Colour_2_RedValue);
+    };
 
     algo.getColour_2_Red = function() {
       return algo.Colour_2_Red;
-    }
+    };
 
     /**
      * Custom Property Definition - Colour_2_Green
@@ -123,12 +124,12 @@ var testAlgo;
      * Custom Property Getter and Setter methods
      */
     algo.setColour_2_Green = function(_Colour_2_GreenValue) {
-      algo.Colour_2_Green = _Colour_2_GreenValue;
-    }
+      algo.Colour_2_Green = Math.floor(_Colour_2_GreenValue);
+    };
 
     algo.getColour_2_Green = function() {
       return algo.Colour_2_Green;
-    }
+    };
 
     /**
      * Custom Property Definition - Colour_2_Blue
@@ -140,12 +141,12 @@ var testAlgo;
      * Custom Property Getter and Setter methods
      */
     algo.setColour_2_Blue = function(_Colour_2_BlueValue) {
-      algo.Colour_2_Blue = _Colour_2_BlueValue;
-    }
+      algo.Colour_2_Blue = Math.floor(_Colour_2_BlueValue);
+    };
 
     algo.getColour_2_Blue = function() {
       return algo.Colour_2_Blue;
-    }
+    };
     /**
      * The actual "algorithm" for this RGB script. Produces a map of
      * size($width, $height) each time it is called.
@@ -154,30 +155,44 @@ var testAlgo;
      * @param rgb Tells the color requested by user in the UI.
      * @return A two-dimensional array[height][width].
      */
-     algo.rgbMap = function(width, height, rgb, step)
- 		{
- 			var NumPos = util.getNumPos(width, height);
+    algo.rgbMap = function(width, height, rgb, step) {
 
- 			var Colour = util.getColours(NumPos); //Calculate the hue spectrum
+      //Calculate the Gradient Colours
+      var Colour;
+      switch (algo.GradientMode) {
+        case "RGB":
+          Colour = util.getGradientRGB(algo.rgbMapStepCount(width, height));
+          break;
+        case "HSV":
+          Colour = util.getGradientHSV(algo.rgbMapStepCount(width, height));
+          break;
+        case "HSV-Clockwise":
+          Colour = util.getHSV-Clockwise(algo.rgbMapStepCount(width, height));
+          break;
+        case "HSV-CounterClockwise":
+          Colour = util.getGradientHSVCounterClockwise(algo.rgbMapStepCount(width, height));
+          break;
+        default:
+          Colour = util.getGradientRGB(algo.rgbMapStepCount(width, height));
+      }
 
- 			var map = new Array(height);
- 			for (var y = 0; y < height; y++)
- 			{
- 				map[y] = [];
- 				for (var x = 0; x < width; x++)
- 				{
- 					switch (algo.Orientation) {
- 						case "Horizontal":
- 						map[y][x] = HSVToQRgb(Colour[x].H,Colour[x].S,Colour[x].V);
- 						break;
- 						case "Vertical":
- 						map[y][x] = HSVToQRgb(Colour[y].H,Colour[y].S,Colour[y].V);
- 						break;
- 					}
- 				}
- 			}
- 			return map;
- 		};
+      var map = new Array(height);
+
+      for (var y = 0; y < height; y++) {
+        map[y] = [];
+        for (var x = 0; x < width; x++) {
+          switch (algo.Orientation) {
+            case "Horizontal":
+              map[y][x] = Colour[x];
+              break;
+            case "Vertical":
+              map[y][x] = Colour[y];
+              break;
+          }
+        }
+      }
+      return map;
+    };
 
     /**
      * Tells RGB Matrix how many steps this algorithm produces with size($width, $height)
@@ -190,83 +205,166 @@ var testAlgo;
       // All pixels in the map must be used exactly once, each one separately
       // at a time. Therefore, the maximum number of steps produced by this
       // script on a 5 * 5 grid is 25.
-      return width * height;
-      //width * height;
-    }
+      switch (algo.Orientation) {
+        case "Horizontal":
+          return width;
+        case "Vertical":
+          return height;
+      }
+
+      return null;
+    };
 
     /**
-		* Calculates the number of positions
-		*
-		* @param width The width of the map
-		* @param height The height of the map
-		* @return the number of starting positions the algorithm has
-		*/
-		util.getNumPos = function(width, height)
-		{
-			var value;
-			switch (algo.Orientation) {
-				case "Horizontal":
-				value = width;
-				break;
-				case "Vertical":
-				value = height;
-				break;
-			}
-			return value-1;
-		};
+     * =========================================
+     * Gradient Functions
+     * =========================================
+     */
 
-		/**
-		* Calculates the Hue spectrum to be used in the algorithm
-    * TODO update to calcualte the Gradient
-		*
-		* @param h the starting hue
-		* @param NumPos The number of starting positions the algorithm has
-		* @return The Hue spectrum
-		*/
-		util.getColours = function(NumPos)
-		{
-			var Hues = new Array (2*NumPos+1);
-			var firstHue, hueStep;
-			var i = 0;
-			switch (algo.HueDirection) {
-				case "Clockwise":
-				firstHue = h;
-				hueStep = algo.HueRange/(NumPos);
+    /**
+     * getGradientRGB
+     * @param steps - the number of steps to take
+     * @returns an array of QRgb values
+     */
+    util.getGradientRGB = function(steps) {
 
-				for(i=0; i<NumPos+1;i++){
-					Hues[NumPos+i]= firstHue+hueStep*i;
-					Hues[NumPos-i]=Hues[NumPos+i];
-				}
-				Hues[NumPos]=h; //define mid point hue
-				break;
+      //Handle special cases for steps
+      if (steps <= 0) {
+        return null;
+      }
+      var gradientColours = new Array(steps);
 
-				case "Anti-Clockwise":
-				firstHue = h;
-				hueStep = -algo.HueRange/(NumPos);
+      if (steps == 1) {
+        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        return gradientColours;
+      }
 
-				for(i=0; i<NumPos+1;i++){
-					Hues[NumPos+i]= firstHue+hueStep*i;
-					Hues[NumPos-i]=Hues[NumPos+i];
-				}
-				Hues[NumPos]=h; //define mid point hue
-				break;
+      if (steps == 2) {
+        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        gradientColours[1] = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+        return gradientColours;
+      }
 
-				case "Both":
-				firstHue = h-(algo.HueRange/2);
-				hueStep = (algo.HueRange/2)/(NumPos);
+      //Handle General Case
 
-				for(i=0; i<NumPos;i++){
-					Hues[i]= firstHue+hueStep*i;
-				}
-				Hues[NumPos]=h; //define mid point hue
-				for(i=NumPos+1; i<2*NumPos+1;i++){
-					Hues[i]= firstHue+hueStep*i;
-				}
-				break;
-			}
+      for (var i = 0; i < steps; i++) {
+        // value = Colour 1 + Current Step * (Colour 2 - Colour 1)/ (steps-1)
+        var tempRed = Math.floor(algo.Colour_1_Red + i * (algo.Colour_2_Red - algo.Colour_1_Red) / (steps - 1));
+        var tempGreen = Math.floor(algo.Colour_1_Green + i * (algo.Colour_2_Green - algo.Colour_1_Green) / (steps - 1));
+        var tempBlue = Math.floor(algo.Colour_1_Blue + i * (algo.Colour_2_Blue - algo.Colour_1_Blue) / (steps - 1));
+        gradientColours[i] = RGBToQRgb(tempRed, tempGreen, tempBlue);
+      }
+      return gradientColours;
+    };
 
-			return Hues;
-		};
+    /**
+     * getGradientHSV
+     * @param steps - the number of steps to take
+     * @returns an array of QRgb values
+     */
+    util.getGradientHSV = function(steps) {
+
+      var gradientColours;
+
+
+      var tempColour1 = RGBToHSV(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+      var tempColour2 = RGBToHSV(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+      var diff = tempColour2.H - tempColour1.H; //work out diffence in hues
+
+      //find the shortest direction and return the result.
+      if (diff<=180 & diff>=-180) {
+        if (diff >= 0) { 
+          gradientColours = util.getGradientHSVClockwise(steps);
+        } else {
+          gradientColours = util.getGradientHSVCounterClockwise(steps);
+        }
+      } else {
+        if (diff > 180) {
+          gradientColours = util.getGradientHSVCounterClockwise(steps);
+        } else {
+          gradientColours = util.getGradientHSVClockwise(steps);
+        }
+      }
+
+      return gradientColours;
+    };
+
+    /**
+     * getGradientHSVClockwise
+     * @param steps - the number of steps to take
+     * @returns an array of QRgb values
+     */
+    util.getGradientHSVClockwise = function(steps) {
+
+      //Handle special cases for steps
+      if (steps <= 0) {
+        return null;
+      }
+      var gradientColours = new Array(steps);
+
+      if (steps == 1) {
+        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        return gradientColours;
+      }
+
+      if (steps == 2) {
+        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        gradientColours[1] = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+        return gradientColours;
+      }
+
+      //Handle General Case
+      var tempColour1 = RGBToHSV(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+      var tempColour2 = RGBToHSV(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+
+      for (var i = 0; i < steps; i++) {
+        // value = Colour 1 + Current Step * (Colour 2 - Colour 1)/ (steps-1)
+        var tempHue = tempColour1.H + i * ((((tempColour2.H - tempColour1.H) % 360) + 360) % 360) / (steps - 1);
+        var tempSat = tempColour1.S + i * (tempColour2.S - tempColour1.S) / (steps - 1);
+        var tempVal = tempColour1.V + i * (tempColour2.V - tempColour1.V) / (steps - 1);
+        gradientColours[i] = HSVToQRgb(tempHue, tempSat, tempVal);
+      }
+      return gradientColours;
+    };
+
+    /**
+     * getGradientHSVCounterClockwise
+     * @param steps - the number of steps to take
+     * @returns an array of QRgb values
+     */
+    util.getGradientHSVCounterClockwise = function(steps) {
+
+      //Handle special cases for steps
+      if (steps <= 0) {
+        return null;
+      }
+      var gradientColours = new Array(steps);
+
+      if (steps == 1) {
+        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        return gradientColours;
+      }
+
+      if (steps == 2) {
+        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        gradientColours[1] = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+        return gradientColours;
+      }
+
+      //Handle General Case
+
+      var tempColour1 = RGBToHSV(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+      var tempColour2 = RGBToHSV(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+
+      for (var i = 0; i < steps; i++) {
+        // value = Colour 1 + Current Step * (Colour 2 - Colour 1)/ (steps-1)
+        var tempHue = tempColour1.H - i * ((((tempColour1.H - tempColour2.H) % 360) + 360) % 360) / (steps - 1);
+        var tempSat = tempColour1.S + i * (tempColour2.S - tempColour1.S) / (steps - 1);
+        var tempVal = tempColour1.V + i * (tempColour2.V - tempColour1.V) / (steps - 1);
+        gradientColours[i] = HSVToQRgb(tempHue, tempSat, tempVal);
+      }
+      return gradientColours;
+    };
 
     // Development tool access
     testAlgo = algo;
