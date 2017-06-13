@@ -22,6 +22,7 @@ var testAlgo;
 
     /**
      * Custom Property Getter and Setter methods
+     * Sets the mode the gradient is calculated over.
      */
     algo.setGradientMode = function(_GradientModeValue) {
       algo.GradientMode = _GradientModeValue;
@@ -100,7 +101,7 @@ var testAlgo;
     /**
      * Custom Property Definition - Colour_2_Red
      */
-    algo.Colour_2_Red = 255;
+    algo.Colour_2_Red = 0;
     algo.properties.push("name:Colour_2_Red|type:range|display:Colour_2_Red|values:0,255|write:setColour_2_Red|read:getColour_2_Red");
 
     /**
@@ -117,7 +118,7 @@ var testAlgo;
     /**
      * Custom Property Definition - Colour_2_Green
      */
-    algo.Colour_2_Green = 255;
+    algo.Colour_2_Green = 0;
     algo.properties.push("name:Colour_2_Green|type:range|display:Colour_2_Green|values:0,255|write:setColour_2_Green|read:getColour_2_Green");
 
     /**
@@ -134,7 +135,7 @@ var testAlgo;
     /**
      * Custom Property Definition - Colour_2_Blue
      */
-    algo.Colour_2_Blue = 255;
+    algo.Colour_2_Blue = 0;
     algo.properties.push("name:Colour_2_Blue|type:range|display:Colour_2_Blue|values:0,255|write:setColour_2_Blue|read:getColour_2_Blue");
 
     /**
@@ -159,21 +160,31 @@ var testAlgo;
 
       //Calculate the Gradient Colours
       var Colour;
+
+      //set the number of gradient steps.
+      var steps = 0;
+      switch (algo.Orientation) {
+        case "Horizontal":
+          steps = width;
+        case "Vertical":
+          steps = height;
+      }
+
       switch (algo.GradientMode) {
         case "RGB":
-          Colour = util.getGradientRGB(algo.rgbMapStepCount(width, height));
+          Colour = util.getGradientRGB(steps);
           break;
         case "HSV":
-          Colour = util.getGradientHSV(algo.rgbMapStepCount(width, height));
+          Colour = util.getGradientHSV(steps);
           break;
         case "HSV-Clockwise":
-          Colour = util.getHSV-Clockwise(algo.rgbMapStepCount(width, height));
+          Colour = util.getGradientHSVClockwise(steps);
           break;
         case "HSV-CounterClockwise":
-          Colour = util.getGradientHSVCounterClockwise(algo.rgbMapStepCount(width, height));
+          Colour = util.getGradientHSVCounterClockwise(steps);
           break;
         default:
-          Colour = util.getGradientRGB(algo.rgbMapStepCount(width, height));
+          Colour = util.getGradientRGB(steps);
       }
 
       var map = new Array(height);
@@ -207,9 +218,9 @@ var testAlgo;
       // script on a 5 * 5 grid is 25.
       switch (algo.Orientation) {
         case "Horizontal":
-          return width;
+          return 1;
         case "Vertical":
-          return height;
+          return 1;
       }
 
       return null;
@@ -273,7 +284,7 @@ var testAlgo;
 
       //find the shortest direction and return the result.
       if (diff<=180 & diff>=-180) {
-        if (diff >= 0) { 
+        if (diff >= 0) {
           gradientColours = util.getGradientHSVClockwise(steps);
         } else {
           gradientColours = util.getGradientHSVCounterClockwise(steps);
