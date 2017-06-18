@@ -11,7 +11,7 @@ var testAlgo;
 
     util = {}; //holder object for algorithm data
 
-    algo.acceptColors = 0; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
+    algo.acceptColors = 1; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
     algo.properties = [];
 
     /**
@@ -166,8 +166,12 @@ var testAlgo;
       switch (algo.Orientation) {
         case "Horizontal":
           steps = width;
+          break;
         case "Vertical":
           steps = height;
+          break;
+        default:
+          steps = width;
       }
 
       switch (algo.GradientMode) {

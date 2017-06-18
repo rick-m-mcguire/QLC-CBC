@@ -165,8 +165,12 @@ var testAlgo;
       switch (algo.Orientation) {
         case "Horizontal":
           steps = width;
+          break;
         case "Vertical":
           steps = height;
+          break;
+        default:
+          steps = width;
       }
 
       switch (algo.GradientMode) {
