@@ -6,7 +6,7 @@ var testAlgo;
   function() {
     var algo = {};
     algo.apiVersion = 2;
-    algo.name = "Gradient Generator";
+    algo.name = "Gradient Generator v2";
     algo.author = "Rick McGuire";
 
     util = {}; //holder object for algorithm data
@@ -50,104 +50,38 @@ var testAlgo;
     /**
      * Custom Property Definition - Colour_1_Red
      */
-    algo.Colour_1_Red = 0;
-    algo.properties.push("name:Colour_1_Red|type:range|display:Colour_1_Red|values:0,255|write:setColour_1_Red|read:getColour_1_Red");
+    algo.Colour_1 = "FF0000";
+    algo.properties.push("name:Colour_1|type:string|display:Colour1|write:setColour_1|read:getColour_1");
 
     /**
      * Custom Property Getter and Setter methods
      */
-    algo.setColour_1_Red = function(_Colour_1_RedValue) {
-      algo.Colour_1_Red = Math.floor(_Colour_1_RedValue);
+    algo.setColour_1 = function(_Colour_1_Value) {
+      algo.Colour_1 = _Colour_1_Value;
     };
 
-    algo.getColour_1_Red = function() {
-      return algo.Colour_1_Red;
-    };
-
-    /**
-     * Custom Property Definition - Colour_1_Green
-     */
-    algo.Colour_1_Green = 0;
-    algo.properties.push("name:Colour_1_Green|type:range|display:Colour_1_Green|values:0,255|write:setColour_1_Green|read:getColour_1_Green");
-
-    /**
-     * Custom Property Getter and Setter methods
-     */
-    algo.setColour_1_Green = function(_Colour_1_GreenValue) {
-      algo.Colour_1_Green = Math.floor(_Colour_1_GreenValue);
-    };
-
-    algo.getColour_1_Green = function() {
-      return algo.Colour_1_Green;
+    algo.getColour_1 = function() {
+      return algo.Colour_1;
     };
 
     /**
-     * Custom Property Definition - Colour_1_Blue
+     * Custom Property Definition - Colour_1_Red
      */
-    algo.Colour_1_Blue = 0;
-    algo.properties.push("name:Colour_1_Blue|type:range|display:Colour_1_Blue|values:0,255|write:setColour_1_Blue|read:getColour_1_Blue");
+    algo.Colour_2 = "0000FF";
+    algo.properties.push("name:Colour_2|type:string|display:Colour2|values:|write:setColour_2|read:getColour_2");
 
     /**
      * Custom Property Getter and Setter methods
      */
-    algo.setColour_1_Blue = function(_Colour_1_BlueValue) {
-      algo.Colour_1_Blue = Math.floor(_Colour_1_BlueValue);
+    algo.setColour_2 = function(_Colour_2_Value) {
+      algo.Colour_2 = _Colour_2_Value;
     };
 
-    algo.getColour_1_Blue = function() {
-      return algo.Colour_1_Blue;
+    algo.getColour_2 = function() {
+      return algo.Colour_2;
     };
 
-    /**
-     * Custom Property Definition - Colour_2_Red
-     */
-    algo.Colour_2_Red = 0;
-    algo.properties.push("name:Colour_2_Red|type:range|display:Colour_2_Red|values:0,255|write:setColour_2_Red|read:getColour_2_Red");
 
-    /**
-     * Custom Property Getter and Setter methods
-     */
-    algo.setColour_2_Red = function(_Colour_2_RedValue) {
-      algo.Colour_2_Red = Math.floor(_Colour_2_RedValue);
-    };
-
-    algo.getColour_2_Red = function() {
-      return algo.Colour_2_Red;
-    };
-
-    /**
-     * Custom Property Definition - Colour_2_Green
-     */
-    algo.Colour_2_Green = 0;
-    algo.properties.push("name:Colour_2_Green|type:range|display:Colour_2_Green|values:0,255|write:setColour_2_Green|read:getColour_2_Green");
-
-    /**
-     * Custom Property Getter and Setter methods
-     */
-    algo.setColour_2_Green = function(_Colour_2_GreenValue) {
-      algo.Colour_2_Green = Math.floor(_Colour_2_GreenValue);
-    };
-
-    algo.getColour_2_Green = function() {
-      return algo.Colour_2_Green;
-    };
-
-    /**
-     * Custom Property Definition - Colour_2_Blue
-     */
-    algo.Colour_2_Blue = 0;
-    algo.properties.push("name:Colour_2_Blue|type:range|display:Colour_2_Blue|values:0,255|write:setColour_2_Blue|read:getColour_2_Blue");
-
-    /**
-     * Custom Property Getter and Setter methods
-     */
-    algo.setColour_2_Blue = function(_Colour_2_BlueValue) {
-      algo.Colour_2_Blue = Math.floor(_Colour_2_BlueValue);
-    };
-
-    algo.getColour_2_Blue = function() {
-      return algo.Colour_2_Blue;
-    };
     /**
      * The actual "algorithm" for this RGB script. Produces a map of
      * size($width, $height) each time it is called.
@@ -243,6 +177,19 @@ var testAlgo;
      */
     util.getGradientRGB = function(steps) {
 
+      /*
+      ** Determine Colours from Hex
+      */
+      var Colour_1_RGB = util.hexToRgb(algo.Colour_1);
+      var Colour_1_Red = Colour_1_RGB.Red;
+      var Colour_1_Green = Colour_1_RGB.Green;
+      var Colour_1_Blue = Colour_1_RGB.Blue;
+
+      var Colour_2_RGB = util.hexToRgb(algo.Colour_2);
+      var Colour_2_Red = Colour_2_RGB.Red;
+      var Colour_2_Green = Colour_2_RGB.Green;
+      var Colour_2_Blue = Colour_2_RGB.Blue;
+
       //Handle special cases for steps
       if (steps <= 0) {
         return null;
@@ -250,13 +197,13 @@ var testAlgo;
       var gradientColours = new Array(steps);
 
       if (steps == 1) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        gradientColours[0] = RGBToQRgb(Colour_1_Red, Colour_1_Green, Colour_1_Blue);
         return gradientColours;
       }
 
       if (steps == 2) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-        gradientColours[1] = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+        gradientColours[0] = RGBToQRgb(Colour_1_Red, Colour_1_Green, Colour_1_Blue);
+        gradientColours[1] = RGBToQRgb(Colour_2_Red, Colour_2_Green, Colour_2_Blue);
         return gradientColours;
       }
 
@@ -264,9 +211,9 @@ var testAlgo;
 
       for (var i = 0; i < steps; i++) {
         // value = Colour 1 + Current Step * (Colour 2 - Colour 1)/ (steps-1)
-        var tempRed = Math.floor(algo.Colour_1_Red + i * (algo.Colour_2_Red - algo.Colour_1_Red) / (steps - 1));
-        var tempGreen = Math.floor(algo.Colour_1_Green + i * (algo.Colour_2_Green - algo.Colour_1_Green) / (steps - 1));
-        var tempBlue = Math.floor(algo.Colour_1_Blue + i * (algo.Colour_2_Blue - algo.Colour_1_Blue) / (steps - 1));
+        var tempRed = Math.floor(Colour_1_Red + i * (Colour_2_Red - Colour_1_Red) / (steps - 1));
+        var tempGreen = Math.floor(Colour_1_Green + i * (Colour_2_Green - Colour_1_Green) / (steps - 1));
+        var tempBlue = Math.floor(Colour_1_Blue + i * (Colour_2_Blue - Colour_1_Blue) / (steps - 1));
         gradientColours[i] = RGBToQRgb(tempRed, tempGreen, tempBlue);
       }
       return gradientColours;
@@ -279,14 +226,29 @@ var testAlgo;
      */
     util.getGradientHSV = function(steps) {
 
-      var gradientColours;
+      /*
+      ** Determine Colours from Hex
+      */
+      var Colour_1_RGB = util.hexToRgb(algo.Colour_1);
+      var Colour_1_Red = Colour_1_RGB.Red;
+      var Colour_1_Green = Colour_1_RGB.Green;
+      var Colour_1_Blue = Colour_1_RGB.Blue;
 
+      var Colour_2_RGB = util.hexToRgb(algo.Colour_2);
+      var Colour_2_Red = Colour_2_RGB.Red;
+      var Colour_2_Green = Colour_2_RGB.Green;
+      var Colour_2_Blue = Colour_2_RGB.Blue;
 
-      var tempColour1 = RGBToHSV(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-      var tempColour2 = RGBToHSV(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+      /*
+      ** Calculeate the Differnce in Hues to Determine if gradient should be clockwise or anti clockwise.
+      ** which ever is shorter.
+      */
+      var tempColour1 = RGBToHSV(Colour_1_Red, Colour_1_Green, Colour_1_Blue);
+      var tempColour2 = RGBToHSV(Colour_2_Red, Colour_2_Green, Colour_2_Blue);
       var diff = tempColour2.H - tempColour1.H; //work out diffence in hues
 
       //find the shortest direction and return the result.
+      var gradientColours;
       if (diff<=180 & diff>=-180) {
         if (diff >= 0) {
           gradientColours = util.getGradientHSVClockwise(steps);
@@ -311,6 +273,19 @@ var testAlgo;
      */
     util.getGradientHSVClockwise = function(steps) {
 
+      /*
+      ** Determine Colours from Hex
+      */
+      var Colour_1_RGB = util.hexToRgb(algo.Colour_1);
+      var Colour_1_Red = Colour_1_RGB.Red;
+      var Colour_1_Green = Colour_1_RGB.Green;
+      var Colour_1_Blue = Colour_1_RGB.Blue;
+
+      var Colour_2_RGB = util.hexToRgb(algo.Colour_2);
+      var Colour_2_Red = Colour_2_RGB.Red;
+      var Colour_2_Green = Colour_2_RGB.Green;
+      var Colour_2_Blue = Colour_2_RGB.Blue;
+
       //Handle special cases for steps
       if (steps <= 0) {
         return null;
@@ -318,19 +293,19 @@ var testAlgo;
       var gradientColours = new Array(steps);
 
       if (steps == 1) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        gradientColours[0] = RGBToQRgb(Colour_1_Red, Colour_1_Green, Colour_1_Blue);
         return gradientColours;
       }
 
       if (steps == 2) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-        gradientColours[1] = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+        gradientColours[0] = RGBToQRgb(Colour_1_Red, Colour_1_Green, Colour_1_Blue);
+        gradientColours[1] = RGBToQRgb(Colour_2_Red, Colour_2_Green, Colour_2_Blue);
         return gradientColours;
       }
 
       //Handle General Case
-      var tempColour1 = RGBToHSV(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-      var tempColour2 = RGBToHSV(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+      var tempColour1 = RGBToHSV(Colour_1_Red, Colour_1_Green, Colour_1_Blue);
+      var tempColour2 = RGBToHSV(Colour_2_Red, Colour_2_Green, Colour_2_Blue);
 
       for (var i = 0; i < steps; i++) {
         // value = Colour 1 + Current Step * (Colour 2 - Colour 1)/ (steps-1)
@@ -349,6 +324,19 @@ var testAlgo;
      */
     util.getGradientHSVCounterClockwise = function(steps) {
 
+      /*
+      ** Determine Colours from Hex
+      */
+      var Colour_1_RGB = util.hexToRgb(algo.Colour_1);
+      var Colour_1_Red = Colour_1_RGB.Red;
+      var Colour_1_Green = Colour_1_RGB.Green;
+      var Colour_1_Blue = Colour_1_RGB.Blue;
+
+      var Colour_2_RGB = util.hexToRgb(algo.Colour_2);
+      var Colour_2_Red = Colour_2_RGB.Red;
+      var Colour_2_Green = Colour_2_RGB.Green;
+      var Colour_2_Blue = Colour_2_RGB.Blue;
+
       //Handle special cases for steps
       if (steps <= 0) {
         return null;
@@ -356,20 +344,20 @@ var testAlgo;
       var gradientColours = new Array(steps);
 
       if (steps == 1) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        gradientColours[0] = RGBToQRgb(Colour_1_Red, Colour_1_Green, Colour_1_Blue);
         return gradientColours;
       }
 
       if (steps == 2) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-        gradientColours[1] = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+        gradientColours[0] = RGBToQRgb(Colour_1_Red, Colour_1_Green, Colour_1_Blue);
+        gradientColours[1] = RGBToQRgb(Colour_2_Red, Colour_2_Green, Colour_2_Blue);
         return gradientColours;
       }
 
       //Handle General Case
 
-      var tempColour1 = RGBToHSV(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-      var tempColour2 = RGBToHSV(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+      var tempColour1 = RGBToHSV(Colour_1_Red, Colour_1_Green, Colour_1_Blue);
+      var tempColour2 = RGBToHSV(Colour_2_Red, Colour_2_Green, Colour_2_Blue);
 
       for (var i = 0; i < steps; i++) {
         // value = Colour 1 + Current Step * (Colour 2 - Colour 1)/ (steps-1)
@@ -379,6 +367,32 @@ var testAlgo;
         gradientColours[i] = HSVToQRgb(tempHue, tempSat, tempVal);
       }
       return gradientColours;
+    };
+
+    //TODO move to Color Functions
+    /**
+     * getGradientHSVCounterClockwise
+     * @param hex - string as hex
+     * @returns an array of ??? values
+     */
+    util.hexToRgb = function(hex) {
+      //CHECK BOUNDS ON HEX INPUT
+
+      if (hex === undefined){
+        hex = "FFFFFF";
+      }
+
+      if (hex.length > 6){
+        hex = "FFFFFF";
+      }
+
+      var bigint = parseInt(hex, 16);
+
+      return {
+        Red: (bigint >> 16) & 255,
+        Green: (bigint >> 8) & 255,
+        Blue: bigint & 255
+      };
     };
 
     // Development tool access
