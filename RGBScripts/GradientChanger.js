@@ -4,21 +4,33 @@ var testAlgo;
 (
 
   function() {
-    var algo = {};
+    var algo = new Object;
     algo.apiVersion = 2;
-    algo.name = "Gradient Changer";
+    algo.name = "Gradient Chaser";
     algo.author = "Rick McGuire";
-
-    util = {}; //holder object for algorithm data
-
-    algo.acceptColors = 0; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
+    algo.acceptColors = 1; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
     algo.properties = [];
-
-    /**
-     * Custom Property Definition - GradientMode
-     */
     algo.GradientMode = "RGB";
     algo.properties.push("name:GradientMode|type:list|display:GradientMode|values:RGB,HSV,HSV-Clockwise,HSV-CounterClockwise|write:setGradientMode|read:getGradientMode");
+    algo.Orientation = "Horizontal";
+    algo.properties.push("name:Orientation|type:list|display:Orientation|values:Horizontal,Vertical|write:setOrientation|read:getOrientation");
+    algo.Colour_1_Red = 0;
+    algo.properties.push("name:Colour_1_Red|type:range|display:Colour_1_Red|values:0,255|write:setColour_1_Red|read:getColour_1_Red");
+    algo.Colour_1_Green = 0;
+    algo.properties.push("name:Colour_1_Green|type:range|display:Colour_1_Green|values:0,255|write:setColour_1_Green|read:getColour_1_Green");
+    algo.Colour_1_Blue = 0;
+    algo.properties.push("name:Colour_1_Blue|type:range|display:Colour_1_Blue|values:0,255|write:setColour_1_Blue|read:getColour_1_Blue");
+    algo.Colour_2_Red = 0;
+    algo.properties.push("name:Colour_2_Red|type:range|display:Colour_2_Red|values:0,255|write:setColour_2_Red|read:getColour_2_Red");
+    algo.Colour_2_Green = 0;
+    algo.properties.push("name:Colour_2_Green|type:range|display:Colour_2_Green|values:0,255|write:setColour_2_Green|read:getColour_2_Green");
+    algo.Colour_2_Blue = 0;
+    algo.properties.push("name:Colour_2_Blue|type:range|display:Colour_2_Blue|values:0,255|write:setColour_2_Blue|read:getColour_2_Blue");
+
+    var util = {}; //holder object for algorithm data
+    var Colour = [];
+    var C1 = 0; // Qrgb  for first Colour
+    var C2 = 0; // Qrgb  for first Colour
 
     /**
      * Custom Property Getter and Setter methods
@@ -36,8 +48,6 @@ var testAlgo;
      * Custom Property - Orientation
      * The direction the ser color will move.
      */
-    algo.Orientation = "Horizontal";
-    algo.properties.push("name:Orientation|type:list|display:Orientation|values:Horizontal,Vertical|write:setOrientation|read:getOrientation");
 
     algo.setOrientation = function(_OrientationValue) {
       algo.Orientation = _OrientationValue;
@@ -48,106 +58,72 @@ var testAlgo;
     };
 
     /**
-     * Custom Property Definition - Colour_1_Red
-     */
-    algo.Colour_1_Red = 0;
-    algo.properties.push("name:Colour_1_Red|type:range|display:Colour_1_Red|values:0,255|write:setColour_1_Red|read:getColour_1_Red");
-
-    /**
      * Custom Property Getter and Setter methods
      */
     algo.setColour_1_Red = function(_Colour_1_RedValue) {
       algo.Colour_1_Red = Math.floor(_Colour_1_RedValue);
+      algo.initialized = false;
     };
 
     algo.getColour_1_Red = function() {
       return algo.Colour_1_Red;
     };
 
-    /**
-     * Custom Property Definition - Colour_1_Green
-     */
-    algo.Colour_1_Green = 0;
-    algo.properties.push("name:Colour_1_Green|type:range|display:Colour_1_Green|values:0,255|write:setColour_1_Green|read:getColour_1_Green");
-
-    /**
-     * Custom Property Getter and Setter methods
-     */
     algo.setColour_1_Green = function(_Colour_1_GreenValue) {
       algo.Colour_1_Green = Math.floor(_Colour_1_GreenValue);
+      algo.initialized = false;
     };
 
     algo.getColour_1_Green = function() {
       return algo.Colour_1_Green;
     };
 
-    /**
-     * Custom Property Definition - Colour_1_Blue
-     */
-    algo.Colour_1_Blue = 0;
-    algo.properties.push("name:Colour_1_Blue|type:range|display:Colour_1_Blue|values:0,255|write:setColour_1_Blue|read:getColour_1_Blue");
-
-    /**
-     * Custom Property Getter and Setter methods
-     */
     algo.setColour_1_Blue = function(_Colour_1_BlueValue) {
       algo.Colour_1_Blue = Math.floor(_Colour_1_BlueValue);
+      algo.initialized = false;
     };
 
     algo.getColour_1_Blue = function() {
       return algo.Colour_1_Blue;
     };
 
-    /**
-     * Custom Property Definition - Colour_2_Red
-     */
-    algo.Colour_2_Red = 0;
-    algo.properties.push("name:Colour_2_Red|type:range|display:Colour_2_Red|values:0,255|write:setColour_2_Red|read:getColour_2_Red");
-
-    /**
-     * Custom Property Getter and Setter methods
-     */
     algo.setColour_2_Red = function(_Colour_2_RedValue) {
       algo.Colour_2_Red = Math.floor(_Colour_2_RedValue);
+      algo.initialized = false;
     };
 
     algo.getColour_2_Red = function() {
       return algo.Colour_2_Red;
     };
 
-    /**
-     * Custom Property Definition - Colour_2_Green
-     */
-    algo.Colour_2_Green = 0;
-    algo.properties.push("name:Colour_2_Green|type:range|display:Colour_2_Green|values:0,255|write:setColour_2_Green|read:getColour_2_Green");
-
-    /**
-     * Custom Property Getter and Setter methods
-     */
     algo.setColour_2_Green = function(_Colour_2_GreenValue) {
       algo.Colour_2_Green = Math.floor(_Colour_2_GreenValue);
+      algo.initialized = false;
     };
 
     algo.getColour_2_Green = function() {
       return algo.Colour_2_Green;
     };
 
-    /**
-     * Custom Property Definition - Colour_2_Blue
-     */
-    algo.Colour_2_Blue = 0;
-    algo.properties.push("name:Colour_2_Blue|type:range|display:Colour_2_Blue|values:0,255|write:setColour_2_Blue|read:getColour_2_Blue");
-
-    /**
-     * Custom Property Getter and Setter methods
-     */
     algo.setColour_2_Blue = function(_Colour_2_BlueValue) {
       algo.Colour_2_Blue = Math.floor(_Colour_2_BlueValue);
+      algo.initialized = false;
     };
 
     algo.getColour_2_Blue = function() {
       return algo.Colour_2_Blue;
     };
+
+    algo.initialized = false;
+
+    // initialize the stars and load random positions
+    util.initialize = function(width, height) {
+      C1 = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+      C2 = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+      algo.initialized = true;
+      return;
+    };
+
     /**
      * The actual "algorithm" for this RGB script. Produces a map of
      * size($width, $height) each time it is called.
@@ -158,8 +134,10 @@ var testAlgo;
      */
     algo.rgbMap = function(width, height, rgb, step) {
 
-      //Calculate the Gradient Colours
-      var Colour;
+      if (algo.initialized === false) {
+        util.initialize(width, height);
+      }
+
       //set the number of gradient steps.
       var steps = 0;
       switch (algo.Orientation) {
@@ -173,6 +151,7 @@ var testAlgo;
           steps = width;
       }
 
+      //Calculate the Gradient Colours
       switch (algo.GradientMode) {
         case "RGB":
           Colour = util.getGradientRGB(steps);
@@ -225,19 +204,19 @@ var testAlgo;
      * @param height The height of the map
      * @return Number of steps required for a map of size($width, $height)
      */
-    algo.rgbMapStepCount = function(width, height) {
-      // All pixels in the map must be used exactly once, each one separately
-      // at a time. Therefore, the maximum number of steps produced by this
-      // script on a 5 * 5 grid is 25.
-      switch (algo.Orientation) {
-        case "Horizontal":
-          return 2;
-        case "Vertical":
-          return 2;
-      }
+     algo.rgbMapStepCount = function(width, height) {
+       // All pixels in the map must be used exactly once, each one separately
+       // at a time. Therefore, the maximum number of steps produced by this
+       // script on a 5 * 5 grid is 25.
+       switch (algo.Orientation) {
+         case "Horizontal":
+           return 2;
+         case "Vertical":
+           return 2;
+       }
 
-      return null;
-    };
+       return null;
+     };
 
     /**
      * =========================================
@@ -259,23 +238,26 @@ var testAlgo;
       var gradientColours = new Array(steps);
 
       if (steps == 1) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        gradientColours[0] = C1;
         return gradientColours;
       }
 
       if (steps == 2) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-        gradientColours[1] = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+        gradientColours[0] = C1;
+        gradientColours[1] = C2;
         return gradientColours;
       }
 
       //Handle General Case
 
+      var Col1 = QRgbToRGB(C1);
+      var Col2 = QRgbToRGB(C2);
+
       for (var i = 0; i < steps; i++) {
         // value = Colour 1 + Current Step * (Colour 2 - Colour 1)/ (steps-1)
-        var tempRed = Math.floor(algo.Colour_1_Red + i * (algo.Colour_2_Red - algo.Colour_1_Red) / (steps - 1));
-        var tempGreen = Math.floor(algo.Colour_1_Green + i * (algo.Colour_2_Green - algo.Colour_1_Green) / (steps - 1));
-        var tempBlue = Math.floor(algo.Colour_1_Blue + i * (algo.Colour_2_Blue - algo.Colour_1_Blue) / (steps - 1));
+        var tempRed = Math.floor(Col1.Red + i * (Col2.Red - Col1.Red) / (steps - 1));
+        var tempGreen = Math.floor(Col1.Green + i * (Col2.Green - Col1.Green) / (steps - 1));
+        var tempBlue = Math.floor(Col1.Blue + i * (Col2.Blue - Col1.Blue) / (steps - 1));
         gradientColours[i] = RGBToQRgb(tempRed, tempGreen, tempBlue);
       }
       return gradientColours;
@@ -290,13 +272,12 @@ var testAlgo;
 
       var gradientColours;
 
-
-      var tempColour1 = RGBToHSV(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-      var tempColour2 = RGBToHSV(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+      var tempColour1 = QRgbToHSV(C1);
+      var tempColour2 = QRgbToHSV(C2);
       var diff = tempColour2.H - tempColour1.H; //work out diffence in hues
 
       //find the shortest direction and return the result.
-      if (diff<=180 & diff>=-180) {
+      if (diff <= 180 & diff >= -180) {
         if (diff >= 0) {
           gradientColours = util.getGradientHSVClockwise(steps);
         } else {
@@ -327,19 +308,19 @@ var testAlgo;
       var gradientColours = new Array(steps);
 
       if (steps == 1) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        gradientColours[0] = C1;
         return gradientColours;
       }
 
       if (steps == 2) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-        gradientColours[1] = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+        gradientColours[0] = C1;
+        gradientColours[1] = C2;
         return gradientColours;
       }
 
       //Handle General Case
-      var tempColour1 = RGBToHSV(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-      var tempColour2 = RGBToHSV(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+      var tempColour1 = QRgbToHSV(C1);
+      var tempColour2 = QRgbToHSV(C2);
 
       for (var i = 0; i < steps; i++) {
         // value = Colour 1 + Current Step * (Colour 2 - Colour 1)/ (steps-1)
@@ -365,36 +346,36 @@ var testAlgo;
       var gradientColours = new Array(steps);
 
       if (steps == 1) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-        return gradientColours;
-      }
-
-      if (steps == 2) {
-        gradientColours[0] = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-        gradientColours[1] = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
-        return gradientColours;
-      }
-
-      //Handle General Case
-
-      var tempColour1 = RGBToHSV(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-      var tempColour2 = RGBToHSV(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
-
-      for (var i = 0; i < steps; i++) {
-        // value = Colour 1 + Current Step * (Colour 2 - Colour 1)/ (steps-1)
-        var tempHue = tempColour1.H - i * ((((tempColour1.H - tempColour2.H) % 360) + 360) % 360) / (steps - 1);
-        var tempSat = tempColour1.S + i * (tempColour2.S - tempColour1.S) / (steps - 1);
-        var tempVal = tempColour1.V + i * (tempColour2.V - tempColour1.V) / (steps - 1);
-        gradientColours[i] = HSVToQRgb(tempHue, tempSat, tempVal);
-      }
+        gradientColours[0] = C1;
       return gradientColours;
-    };
+    }
 
-    // Development tool access
-    testAlgo = algo;
+    if (steps == 2) {
+      gradientColours[0] = C1;
+      gradientColours[1] = C2;
+      return gradientColours;
+    }
 
-    return algo;
-  }
+    //Handle General Case
+
+    var tempColour1 = QRgbToHSV(C1);
+    var tempColour2 = QRgbToHSV(C2);
+
+    for (var i = 0; i < steps; i++) {
+      // value = Colour 1 + Current Step * (Colour 2 - Colour 1)/ (steps-1)
+      var tempHue = tempColour1.H - i * ((((tempColour1.H - tempColour2.H) % 360) + 360) % 360) / (steps - 1);
+      var tempSat = tempColour1.S + i * (tempColour2.S - tempColour1.S) / (steps - 1);
+      var tempVal = tempColour1.V + i * (tempColour2.V - tempColour1.V) / (steps - 1);
+      gradientColours[i] = HSVToQRgb(tempHue, tempSat, tempVal);
+    }
+    return gradientColours;
+  };
+
+  // Development tool access
+  testAlgo = algo;
+
+  return algo;
+}
 )();
 
 /**
