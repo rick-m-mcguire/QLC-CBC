@@ -1,8 +1,8 @@
 /*
   Q Light Controller Plus
-  Colour-Wipe.js v1.0
+  Wipe.js v1.0
 
-  Copyright (c) Rick McGuire
+  Copyright (c) 2017 Rick McGuire
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -25,28 +25,28 @@ var testAlgo;
     function() {
         var algo = {};
         algo.apiVersion = 2;
-        algo.name = "Colour Wipe";
+        algo.name = "Wipe";
         algo.author = "Rick McGuire";
-        algo.acceptColors = 0; // 0 - No Colours, 1 - 1 Colour, 2 - 2 Colours
+        algo.acceptColors = 0; // 0 - No Colors, 1 - 1 Color, 2 - 2 Colors
         algo.properties = [];
         algo.WipeMode = "Left-To-Right";
         algo.properties.push("name:WipeMode|type:list|display:Wipe Mode|values:Left-To-Right,Right-To-Left,Top-To-Bottom,Bottom-To-Top,Diagonal-Top-Left,Diagonal-Top-Right,Diagonal-Bottom-Left,Diagonal-Bottom-Right,Square-Top-Left,Square-Top-Right,Square-Bottom-Left,Square-Bottom-Right|write:setWipeMode|read:getWipeMode");
-        algo.Colour_1_Red = 255;
-        algo.properties.push("name:Colour_1_Red|type:range|display:Colour1 Red|values:0,255|write:setColour_1_Red|read:getColour_1_Red");
-        algo.Colour_1_Green = 0;
-        algo.properties.push("name:Colour_1_Green|type:range|display:Colour1 Green|values:0,255|write:setColour_1_Green|read:getColour_1_Green");
-        algo.Colour_1_Blue = 0;
-        algo.properties.push("name:Colour_1_Blue|type:range|display:Colour1 Blue|values:0,255|write:setColour_1_Blue|read:getColour_1_Blue");
-        algo.Colour_2_Red = 0;
-        algo.properties.push("name:Colour_2_Red|type:range|display:Colour2 Red|values:0,255|write:setColour_2_Red|read:getColour_2_Red");
-        algo.Colour_2_Green = 0;
-        algo.properties.push("name:Colour_2_Green|type:range|display:Colour2 Green|values:0,255|write:setColour_2_Green|read:getColour_2_Green");
-        algo.Colour_2_Blue = 255;
-        algo.properties.push("name:Colour_2_Blue|type:range|display:Colour2 Blue|values:0,255|write:setColour_2_Blue|read:getColour_2_Blue");
+        algo.Color_1_Red = 255;
+        algo.properties.push("name:Color_1_Red|type:range|display:Color1 Red|values:0,255|write:setColor_1_Red|read:getColor_1_Red");
+        algo.Color_1_Green = 0;
+        algo.properties.push("name:Color_1_Green|type:range|display:Color1 Green|values:0,255|write:setColor_1_Green|read:getColor_1_Green");
+        algo.Color_1_Blue = 0;
+        algo.properties.push("name:Color_1_Blue|type:range|display:Color1 Blue|values:0,255|write:setColor_1_Blue|read:getColor_1_Blue");
+        algo.Color_2_Red = 0;
+        algo.properties.push("name:Color_2_Red|type:range|display:Color2 Red|values:0,255|write:setColor_2_Red|read:getColor_2_Red");
+        algo.Color_2_Green = 0;
+        algo.properties.push("name:Color_2_Green|type:range|display:Color2 Green|values:0,255|write:setColor_2_Green|read:getColor_2_Green");
+        algo.Color_2_Blue = 255;
+        algo.properties.push("name:Color_2_Blue|type:range|display:Color2 Blue|values:0,255|write:setColor_2_Blue|read:getColor_2_Blue");
 
         var util = {}; //holder object for algorithm data
-        var C1 = 0; // Qrgb  for Colour1
-        var C2 = 0; // Qrgb  for Colour2
+        var C1 = 0; // Qrgb  for Color1
+        var C2 = 0; // Qrgb  for Color2
 
         /*
          * ====================================================================
@@ -64,74 +64,74 @@ var testAlgo;
             return algo.WipeMode;
         };
 
-        algo.setColour_1_Red = function(_Colour_1_RedValue) {
-            algo.Colour_1_Red = Math.floor(_Colour_1_RedValue);
+        algo.setColor_1_Red = function(_Color_1_RedValue) {
+            algo.Color_1_Red = Math.floor(_Color_1_RedValue);
             algo.initialized = false;
         };
 
-        algo.getColour_1_Red = function() {
-            return algo.Colour_1_Red;
+        algo.getColor_1_Red = function() {
+            return algo.Color_1_Red;
         };
 
-        algo.setColour_1_Green = function(_Colour_1_GreenValue) {
-            algo.Colour_1_Green = Math.floor(_Colour_1_GreenValue);
+        algo.setColor_1_Green = function(_Color_1_GreenValue) {
+            algo.Color_1_Green = Math.floor(_Color_1_GreenValue);
             algo.initialized = false;
         };
 
-        algo.getColour_1_Green = function() {
-            return algo.Colour_1_Green;
+        algo.getColor_1_Green = function() {
+            return algo.Color_1_Green;
         };
 
-        algo.setColour_1_Blue = function(_Colour_1_BlueValue) {
-            algo.Colour_1_Blue = Math.floor(_Colour_1_BlueValue);
+        algo.setColor_1_Blue = function(_Color_1_BlueValue) {
+            algo.Color_1_Blue = Math.floor(_Color_1_BlueValue);
             algo.initialized = false;
         };
 
-        algo.getColour_1_Blue = function() {
-            return algo.Colour_1_Blue;
+        algo.getColor_1_Blue = function() {
+            return algo.Color_1_Blue;
         };
 
-        algo.setColour_2_Red = function(_Colour_2_RedValue) {
-            algo.Colour_2_Red = Math.floor(_Colour_2_RedValue);
+        algo.setColor_2_Red = function(_Color_2_RedValue) {
+            algo.Color_2_Red = Math.floor(_Color_2_RedValue);
             algo.initialized = false;
         };
 
-        algo.getColour_2_Red = function() {
-            return algo.Colour_2_Red;
+        algo.getColor_2_Red = function() {
+            return algo.Color_2_Red;
         };
 
-        algo.setColour_2_Green = function(_Colour_2_GreenValue) {
-            algo.Colour_2_Green = Math.floor(_Colour_2_GreenValue);
+        algo.setColor_2_Green = function(_Color_2_GreenValue) {
+            algo.Color_2_Green = Math.floor(_Color_2_GreenValue);
             algo.initialized = false;
         };
 
-        algo.getColour_2_Green = function() {
-            return algo.Colour_2_Green;
+        algo.getColor_2_Green = function() {
+            return algo.Color_2_Green;
         };
 
-        algo.setColour_2_Blue = function(_Colour_2_BlueValue) {
-            algo.Colour_2_Blue = Math.floor(_Colour_2_BlueValue);
+        algo.setColor_2_Blue = function(_Color_2_BlueValue) {
+            algo.Color_2_Blue = Math.floor(_Color_2_BlueValue);
             algo.initialized = false;
         };
 
-        algo.getColour_2_Blue = function() {
-            return algo.Colour_2_Blue;
+        algo.getColor_2_Blue = function() {
+            return algo.Color_2_Blue;
         };
 
         algo.initialized = false;
 
         /**
-         * Initializes / Sets the Colour 1/2 Values based on the user input and
+         * Initializes / Sets the Color 1/2 Values based on the user input and
          * convets them to Qrgb values.
          * @param width The width of the map
          * @param height The height of the map
-         * @param rgb Tells the colour requested by user in the UI.
+         * @param rgb Tells the color requested by user in the UI.
          * @param step The step number that is requested (0 to (algo.rgbMapStepCount - 1))
          * @return Nothing
          */
         util.initialize = function(width, height, rgb, step) {
-            C1 = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-            C2 = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+            C1 = RGBToQRgb(algo.Color_1_Red, algo.Color_1_Green, algo.Color_1_Blue);
+            C2 = RGBToQRgb(algo.Color_2_Red, algo.Color_2_Green, algo.Color_2_Blue);
             algo.initialized = true;
             return;
         };
@@ -141,22 +141,22 @@ var testAlgo;
          * size($width, $height) each time it is called.
          * @param width The width of the map
          * @param height The height of the map
-         * @param rgb Tells the colour requested by user in the UI.
+         * @param rgb Tells the color requested by user in the UI.
          * @param step The step number that is requested (0 to (algo.rgbMapStepCount - 1))
          * @return A two-dimensional array[height][width].
          */
         algo.rgbMap = function(width, height, rgb, step) {
 
-            //initialize the colours if not already.
+            //initialize the colors if not already.
             if (algo.initialized === false) {
                 util.initialize(width, height, rgb, step);
             }
 
-            //Set Base and Fill Colours
+            //Set Base and Fill Colors
             var base = C1;
             var fill = C2;
 
-            //flip base/fill colours when over halfway
+            //flip base/fill colors when over halfway
             if (step >= width && algo.WipeMode == "Left-To-Right") {
                 base = C2;
                 fill = C1;
@@ -197,9 +197,9 @@ var testAlgo;
             for (var y = 0; y < height; y++) {
                 map[y] = [];
                 for (var x = 0; x < width; x++) {
-                    map[y][x] = base; //Set pixel to base colour
+                    map[y][x] = base; //Set pixel to base color
 
-                    // Replace base colour with fill according to the wipe mode
+                    // Replace base color with fill according to the wipe mode
                     switch (algo.WipeMode) {
                         case "Left-To-Right":
                             if (x < (step % width)) {
@@ -384,7 +384,7 @@ var testAlgo;
  * @param r - the amount of Red 0-255
  * @param g - the amount of Green 0-255
  * @param b - the amount of Blue 0-255
- * @returns a QRgb value for the colour
+ * @returns a QRgb value for the color
  */
 function RGBToQRgb(r, g, b) {
     return (r << 16) + (g << 8) + (b << 0); //bitwise shift blue becuase otherwise its treated as a string.
