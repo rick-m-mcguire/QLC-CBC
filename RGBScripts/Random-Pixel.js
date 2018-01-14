@@ -1,3 +1,5 @@
+//TODO Tidy up for release
+
 // Development tool access
 var testAlgo;
 
@@ -86,11 +88,7 @@ var testAlgo;
          */
         algo.rgbMapStepCount = function(width, height)
         {
-            // All pixels in the map must be used exactly once, each one separately
-            // at a time. Therefore, the maximum number of steps produced by this
-            // script on a 5 * 5 grid is 25.
             return width * height;
-			      //width * height;
         }
 
         // Development tool access
