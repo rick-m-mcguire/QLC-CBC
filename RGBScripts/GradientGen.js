@@ -14,6 +14,8 @@ var testAlgo;
     algo.properties.push("name:GradientMode|type:list|display:GradientMode|values:RGB,HSV,HSV-Clockwise,HSV-CounterClockwise|write:setGradientMode|read:getGradientMode");
     algo.Orientation = "Horizontal";
     algo.properties.push("name:Orientation|type:list|display:Orientation|values:Horizontal,Vertical|write:setOrientation|read:getOrientation");
+    algo.Order = "Normal";
+    algo.properties.push("name:Order|type:list|display:Order|values:Normal,Reverse|write:setOrder|read:getOrder");
     algo.Colour_1_Red = 0;
     algo.properties.push("name:Colour_1_Red|type:range|display:Colour_1_Red|values:0,255|write:setColour_1_Red|read:getColour_1_Red");
     algo.Colour_1_Green = 0;
@@ -51,10 +53,25 @@ var testAlgo;
 
     algo.setOrientation = function(_OrientationValue) {
       algo.Orientation = _OrientationValue;
+      algo.initialized = false;
     };
 
     algo.getOrientation = function() {
       return algo.Orientation;
+    };
+
+    /**
+     * Custom Property - Order
+     * The direction the ser color will move.
+     */
+
+    algo.setOrder = function(_OrderValue) {
+      algo.Order = _OrderValue;
+      algo.initialized = false;
+    };
+
+    algo.getOrder = function() {
+      return algo.Order;
     };
 
     /**
@@ -118,8 +135,15 @@ var testAlgo;
 
     // initialize the stars and load random positions
     util.initialize = function(width, height) {
-      C1 = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
-      C2 = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+      if (algo.Order === "Normal"){
+        C1 = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+        C2 = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+      }
+      else{ // Order is Reverse
+        C1 = RGBToQRgb(algo.Colour_2_Red, algo.Colour_2_Green, algo.Colour_2_Blue);
+        C2 = RGBToQRgb(algo.Colour_1_Red, algo.Colour_1_Green, algo.Colour_1_Blue);
+      }
+
       algo.initialized = true;
       return;
     };
