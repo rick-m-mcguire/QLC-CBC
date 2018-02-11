@@ -144,7 +144,6 @@ var testAlgo;
           Fade Steps, and Number concurrent pixels.
 
           Should result in all pixels being used and roughtly NumPixels active.
-
           */
           time = 0;
           mode = "Waiting";
